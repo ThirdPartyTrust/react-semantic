@@ -86,5 +86,3 @@ Modal.defaultProps = {
   closeOnEsc: true,
   header: null
 };
-
-module.exports = Modal;
