@@ -28,7 +28,7 @@ class Modal extends React.Component {
       this.setClosed();
     }.bind(this), 500);
   }
-  
+
   setClosed() {
     this.setState({
       show: false,
