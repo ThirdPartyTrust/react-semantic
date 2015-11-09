@@ -1,7 +1,7 @@
 import React from 'react';
 import Portal from 'react-portal';
 
-class Modal extends React.Component {
+export default class Modal extends React.Component {
 
   constructor(props) {
     super(props);
@@ -86,5 +86,3 @@ Modal.defaultProps = {
   closeOnEsc: true,
   header: null
 };
-
-module.exports = Modal;
