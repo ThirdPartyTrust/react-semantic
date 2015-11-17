@@ -8,28 +8,32 @@
   },
   "scripts":{
     "clean": "rimraf dist",
-    "build": "npm run clean && webpack --config webpack.config.js"
+    "build": "npm run clean && webpack --config webpack.config.js",
+    "build:commonjs": "babel src --out-dir lib",
+    "postinstall": "npm run build:commonjs"
   },
-  "main": "dist/bundle.js",
+  "main": "lib/index.js",
   "devDependencies": {
     "rimraf": "^2.4.3",
-    "babel-core": "^5.4.7",
-    "babel-eslint": "^3.1.9",
-    "babel-loader": "^5.1.2",
-    "babel-plugin-react-transform": "^1.1.1",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.0",
     "eslint": "^1.7.0",
     "eslint-plugin-react": "^3.6.0",
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0",
     "webpack": "^1.9.6",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.0.0",
-    "css-loader": "latest"
+    "css-loader": "latest",
+    "express": "^4.13.3",
+    "fs-extra": "^0.26.2"
   },
   "dependencies": {
     "react": "^0.14.0",
-    "react-portal": "latest"
+    "react-dom": "^0.14.0",
+    "react-portal": "latest",
+    "babel-core": "^5.4.7",
+    "babel-eslint": "^3.1.9",
+    "babel-loader": "^5.1.2",
+    "babel-plugin-react-transform": "^1.1.1",
+    "babel-cli": "^6.1.18"
   }
 }

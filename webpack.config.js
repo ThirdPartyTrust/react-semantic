@@ -9,11 +9,13 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/dist/'
+    publicPath: '/static/'
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.ContextReplacementPlugin(/.*$/, /NEVER_MATCH^/),
     new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
       compressor: {
         warnings: false
       }
