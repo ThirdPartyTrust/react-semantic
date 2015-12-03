@@ -1,8 +1,6 @@
 import React from 'react';
-import Portal from 'react-portal';
 
 export default class Modal extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -10,7 +8,6 @@ export default class Modal extends React.Component {
       closing: false
     };
   }
-
   componentWillReceiveProps(newProps) {
     if (!newProps.show && this.state.show) {
       this.close();
@@ -21,14 +18,12 @@ export default class Modal extends React.Component {
       });
     }
   }
-
   close() {
     this.setClosing();
     setTimeout(function(){
       this.setClosed();
     }.bind(this), 500);
   }
-
   setClosed() {
     this.setState({
       show: false,
@@ -37,14 +32,12 @@ export default class Modal extends React.Component {
       this.props.onClose();
     }.bind(this));
   }
-
   setClosing() {
     this.setState({
       show: true,
       closing: true
     });
   }
-
   setHeader() {
     if (this.props.header) {
       return (
@@ -54,13 +47,9 @@ export default class Modal extends React.Component {
       );
     }
   }
-
   render() {
     return (
-      <Portal
-        isOpened={this.state.show}
-        closeOnEsc={this.props.closeOnEsc}
-      >
+      <div style={{display: !this.state.show ? 'none' : 'block'}}>
         <div className={'ui dimmer modals visible active page transition fade ' + (!this.state.closing ? 'in' : 'out')}>
           <div
             className={'ui standard test modal transition visible active scale ' + (!this.state.closing ? 'in' : 'out')}
@@ -71,7 +60,7 @@ export default class Modal extends React.Component {
             {this.props.children}
           </div>
         </div>
-      </Portal>
+      </div>
     );
   }
 }
