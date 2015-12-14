@@ -60,7 +60,7 @@ class Input extends Component {
   buildFieldClassName() {
     let required = this.props.required ? 'required' : '';
     let error = !this.state.valid ? 'error' : '';
-    return `${this.required} field ${this.error}`;
+    return `${required} field ${error}`;
   }
   renderFieldLabel() {
     if (this.props.label) {
