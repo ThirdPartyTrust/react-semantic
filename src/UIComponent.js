@@ -5,27 +5,25 @@ export default function exportComponent(Component, uiElement) {
   class UIComponent extends React.Component {
     static propTypes = {
       uiStyle: PropTypes.string,
-      className: PropTypes.string,
-      uiElement: PropTypes.string
-    };
-    static defaultProps = {
-      uiElement: uiElement
+      className: PropTypes.string
     };
     constructor(props) {
       super(props);
       this.state = {};
-      if (uiElement === 'input') {
-        this.buildInputStyle();
-      }
+      this._component = null;
     }
     render() {
       return (
-        <Component className={this.buildStyle()} {...this.props} {...this.state}/>
+        <Component ref={(ref) => this._component = ref} className={this.buildStyle()} {...this.props} {...this.state}/>
       );
     }
     buildStyle() {
       let uiElementStyle = this.buildElementStyle(uiElement);
-      return `ui${uiElementStyle ? ' '+uiElementStyle : ''}${this.props.uiStyle ? ' '+this.props.uiStyle : ''}${uiElement ? ' '+uiElement : ''}${this.props.className ? ' '+this.props.className : ''}`;
+      let elementStyle = uiElementStyle ? ` ${uiElementStyle}` : '';
+      let uiStyle = this.props.uiStyle ? ` ${this.props.uiStyle}` : '';
+      let uiElementClass = uiElement ? ` ${uiElement}` : '';
+      let className = this.props.className ? ` ${this.props.className}` : '';
+      return `ui${elementStyle}${uiStyle}${uiElementClass}${className}`;
     }
     buildElementStyle(uiElement) {
       if (!this.props.children) {
@@ -34,7 +32,7 @@ export default function exportComponent(Component, uiElement) {
       switch (uiElement) {
         case 'input':
           return this.buildInputStyle();
-        case 'form':
+        default:
           return;
       }
     }
@@ -42,14 +40,16 @@ export default function exportComponent(Component, uiElement) {
       var labelCount = 0;
       var iconCount = 0;
       var classString = '';
-      this.props.children.map(child => {
-        if (child.props.uiElement === 'label') {
-          labelCount++;
-        }
-        if (child.props.uiElement === 'icon') {
-          iconCount++;
-        }
-      });
+      if (Object.prototype.toString.call(this.props.children) === '[object Array]') {
+        this.props.children.map(child => {
+          if (child.props.uiElement === 'label') {
+            labelCount++;
+          }
+          if (child.props.uiElement === 'icon') {
+            iconCount++;
+          }
+        });
+      }
       if (labelCount > 1) {
         classString += 'right ';
       }
@@ -60,6 +60,13 @@ export default function exportComponent(Component, uiElement) {
         classString += 'icon ';
       }
       return classString;
+    }
+    validate() {
+      if (this._component.validate instanceof Function) {
+        return this._component.validate();
+      } else {
+        console.error(`react-semantic component ${uiElement} does not have a validate method!`);
+      }
     }
   }
 

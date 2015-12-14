@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import exportComponent from './UIComponent';
 
-export default class Icon extends Component {
+class Icon extends Component {
   static propTypes = {
     uiStyle: PropTypes.string,
     className: PropTypes.string

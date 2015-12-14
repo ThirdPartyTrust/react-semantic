@@ -1,6 +1,18 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-export default class Modal extends React.Component {
+export default class Modal extends Component {
+  static propTypes = {
+    show: PropTypes.bool,
+    closeOnEsc: PropTypes.bool,
+    header: PropTypes.string,
+    onClose: PropTypes.func
+  };
+  static defaultProps = {
+    show: false,
+    closeOnEsc: true,
+    header: null,
+    onClose: function(){}
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -64,17 +76,3 @@ export default class Modal extends React.Component {
     );
   }
 }
-
-Modal.propTypes = {
-  show: React.PropTypes.bool,
-  closeOnEsc: React.PropTypes.bool,
-  header: React.PropTypes.string,
-  onClose: React.PropTypes.func
-};
-
-Modal.defaultProps = {
-  show: false,
-  closeOnEsc: true,
-  header: null,
-  onClose: function(){}
-};

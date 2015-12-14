@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import exportComponent from './UIComponent';
+import { exportComponent } from './';
 
-class Label extends Component {
+class Grid extends Component {
   static propTypes = {
     className: PropTypes.string,
     uiStyle: PropTypes.string
@@ -15,4 +15,4 @@ class Label extends Component {
   }
 }
 
-export default exportComponent(Label, 'label');
+export default exportComponent(Grid, 'grid');

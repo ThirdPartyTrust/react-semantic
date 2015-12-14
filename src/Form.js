@@ -1,12 +1,18 @@
 import React, { Component, PropTypes } from 'react';
+import { exportComponent } from './';
 
-export default class Form extends Component {
+class Form extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
-    disabled: PropTypes.bool
+    validateOnSubmit: PropTypes.bool,
+    disabled: PropTypes.bool,
+    formData: PropTypes.object
   };
   static defaultProps = {
-    onSubmit: function(){}
+    onSubmit: function(){},
+    validateOnSubmit: true,
+    disabled: false,
+    formData: {}
   };
   constructor(props) {
     super(props);
@@ -15,9 +21,11 @@ export default class Form extends Component {
       formError: this.props.formError
     };
   }
-  submit(e) {
+  handleSubmit(e) {
     e.preventDefault();
-    this.props.onSubmit(formData, callback);
+    if (this.props.onSubmit instanceof Function) {
+      this.props.onSubmit(this.props.formData);
+    }
   }
   render() {
     return (
@@ -25,10 +33,15 @@ export default class Form extends Component {
         className={this.props.className}
         onSubmit={this.handleSubmit.bind(this)}
       >
-        <fieldset disabled={this.state.disabled}>
+        <fieldset
+          disabled={this.state.disabled}
+          style={{border: 'none'}}
+        >
           {this.props.children}
         </fieldset>
       </form>
     );
   }
 }
+
+export default exportComponent(Form, 'form');
