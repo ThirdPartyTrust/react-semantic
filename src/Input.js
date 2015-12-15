@@ -114,13 +114,16 @@ class Input extends Component {
     this.validate();
   }
   handleOnChange(e) {
+    window.clearTimeout(this._changeTimeout);
+    this._changeTimeout = window.setTimeout(
+      this.onChange.bind(this, e), 250
+    );
+  }
+  onChange(e) {
     if (this.props.onChange instanceof Function) {
       this.props.onChange(this, e);
     }
-    window.clearTimeout(this._changeTimeout);
-    this._changeTimeout = window.setTimeout(
-      this.validate.bind(this), 250
-    );
+    this.validate();
   }
   validate() {
     let valid = true;
