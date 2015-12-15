@@ -6,6 +6,7 @@ class Dropdown extends Component {
     uiStyle: PropTypes.string,
     className: PropTypes.string,
     require: PropTypes.bool,
+    name: PropTypes.string,
     requireMessage: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.string,
@@ -40,7 +41,7 @@ class Dropdown extends Component {
   render() {
     return (
       <div className="ui form">
-        <div className={this.state.valid ? 'field' : 'require field error'}>
+        <div className={this.buildFieldClassName()}>
           {this.renderFieldLabel()}
           <div
             className={`${this.props.className}${this.state.open ? ' active visible' : ''}`}
@@ -62,6 +63,11 @@ class Dropdown extends Component {
         </div>
       </div>
     );
+  }
+  buildFieldClassName() {
+    let require = this.props.require ? 'required' : '';
+    let error = !this.state.valid ? 'error' : '';
+    return `${require} field ${error}`;
   }
   renderFieldLabel() {
     if (this.props.label) {
@@ -110,16 +116,17 @@ class Dropdown extends Component {
     this.closeMenu();
   }
   handleChange(target, e) {
-    if (this.props.onChange instanceof Function) {
-      this.props.onChange(target.props.value, e);
-    }
     this.setState({
       message: this.state.message,
       valid: true,
       value: target.props.value,
       valueContent: this.renderChild(target, false),
       open: false
-    });
+    }, function() {
+      if (this.props.onChange instanceof Function) {
+        this.props.onChange(this, e);
+      }
+    }.bind(this, e));
   }
   openMenu() {
     this.setState(Object.assign({}, this.state, {
@@ -129,17 +136,17 @@ class Dropdown extends Component {
   closeMenu() {
     this.setState(Object.assign({}, this.state, {
       open: false,
-      valid: this.validate(false)
+      valid: this.validate()
     }));
   }
-  validate(updateState = true) {
-    let valid = !(this.props.require && !this.state.value);
-    if (this.state.valid != valid && updateState) {
-      this.setState(Object.assign({}, this.state, {
-        valid: valid
-      }));
-    }
-    return valid;
+  validate() {
+    return !(this.props.require && !this.state.value);
+  }
+  getName() {
+    return this.props.name;
+  }
+  getValue() {
+    return this.state.value;
   }
 }
 

@@ -9,10 +9,10 @@ export default class Select extends Component {
   render() {
     return(
       <Dropdown
+        {...this.props}
         uiStyle={this.props.uiStyle ? `${this.props.uiStyle} selection` : 'selection'}
         select={true}
         ref={(ref) => this._dropdown = ref}
-        {...this.props}
       >
         {this.props.children}
       </Dropdown>
@@ -20,5 +20,11 @@ export default class Select extends Component {
   }
   validate() {
     return this._dropdown.validate();
+  }
+  getName() {
+    return this._dropdown.getName();
+  }
+  getValue() {
+    return this._dropdown.getValue();
   }
 }

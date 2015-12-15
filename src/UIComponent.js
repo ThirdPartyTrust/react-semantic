@@ -68,6 +68,20 @@ export default function exportComponent(Component, uiElement) {
         console.error(`react-semantic component ${uiElement} does not have a validate method!`);
       }
     }
+    getName() {
+      if (this._component.getName instanceof Function) {
+        return this._component.getName();
+      } else {
+        console.error(`react-semantic component ${uiElement} does not have a getName method!`);
+      }
+    }
+    getValue() {
+      if (this._component.getValue instanceof Function) {
+        return this._component.getValue();
+      } else {
+        console.error(`react-semantic component ${uiElement} does not have a getValue method!`);
+      }
+    }
   }
 
   return UIComponent;

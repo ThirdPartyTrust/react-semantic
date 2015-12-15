@@ -6,6 +6,7 @@ class Input extends Component {
     uiStyle: PropTypes.string,
     className: PropTypes.string,
     type: PropTypes.string,
+    name: PropTypes.string,
     validate: PropTypes.any,
     validateMessage: PropTypes.string,
     require: PropTypes.bool,
@@ -18,7 +19,6 @@ class Input extends Component {
     disabled: PropTypes.bool,
     readOnly: PropTypes.bool,
     maxLength: PropTypes.string || PropTypes.number,
-    name: PropTypes.string,
     rows: PropTypes.string || PropTypes.number,
     cols: PropTypes.string || PropTypes.number
   };
@@ -71,6 +71,7 @@ class Input extends Component {
       return (
         <textarea
           {...this.props}
+          children={null}
           onBlur={this.handleOnBlur.bind(this)}
           onChange={this.handleOnChange.bind(this)}
           ref={(ref) => this._input = ref}
@@ -80,6 +81,7 @@ class Input extends Component {
       return (
         <input
           {...this.props}
+          children={null}
           onBlur={this.handleOnBlur.bind(this)}
           onChange={this.handleOnChange.bind(this)}
           ref={(ref) => this._input = ref}
@@ -113,7 +115,7 @@ class Input extends Component {
   }
   handleOnChange(e) {
     if (this.props.onChange instanceof Function) {
-      this.props.onChange(e.target.value, e);
+      this.props.onChange(this, e);
     }
     window.clearTimeout(this._changeTimeout);
     this._changeTimeout = window.setTimeout(
@@ -163,6 +165,15 @@ class Input extends Component {
       });
       return true;
     }
+  }
+  getName() {
+    return this.props.name;
+  }
+  getValue() {
+    if (!this._input) {
+      return null;
+    }
+    return this._input.value;
   }
 }
 
