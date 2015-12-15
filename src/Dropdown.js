@@ -113,7 +113,11 @@ class Dropdown extends Component {
     if (this._dropdown.contains(e.target) || !this.state.open) {
       return;
     }
-    this.closeMenu();
+    this.closeMenu(() => {
+      if (this.props.onBlur instanceof Function) {
+        this.props.onBlur(this, e);
+      }
+    }.bind(this, e));
   }
   handleChange(target, e) {
     this.setState({
@@ -133,11 +137,11 @@ class Dropdown extends Component {
       open: true
     })); 
   }
-  closeMenu() {
+  closeMenu(callback = () => {}) {
     this.setState(Object.assign({}, this.state, {
       open: false,
       valid: this.validate()
-    }));
+    }), callback());
   }
   validate() {
     return !(this.props.require && !this.state.value);

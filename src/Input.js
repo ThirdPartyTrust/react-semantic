@@ -103,7 +103,7 @@ class Input extends Component {
   }
   handleOnBlur(e) {
     if (this.props.onBlur instanceof Function) {
-      this.props.onBlur(e.target.value, e);
+      this.props.onBlur(this, e);
     }
     this.validateOnBlur(e);
   }
