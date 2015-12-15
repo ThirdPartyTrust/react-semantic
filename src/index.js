@@ -10,3 +10,4 @@ export Select from './Select';
 export Grid from './Grid';
 export Row from './Row';
 export Column from './Column';
+export Textarea from './Textarea';

@@ -5,8 +5,8 @@ class Dropdown extends Component {
   static propTypes = {
     uiStyle: PropTypes.string,
     className: PropTypes.string,
-    required: PropTypes.bool,
-    requiredMessage: PropTypes.string,
+    require: PropTypes.bool,
+    requireMessage: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
@@ -16,15 +16,15 @@ class Dropdown extends Component {
     select: PropTypes.bool
   };
   static defaultProps = {
-    required: false,
-    requiredMessage: 'This field is required',
+    require: false,
+    requireMessage: 'This field is required',
     disabled: false,
     select: false
   };
   constructor(props) {
     super(props);
     this.state = {
-      message: this.props.requiredMessage,
+      message: this.props.requireMessage,
       valid: true,
       value: null,
       valueContent: null,
@@ -40,7 +40,7 @@ class Dropdown extends Component {
   render() {
     return (
       <div className="ui form">
-        <div className={this.state.valid ? 'field' : 'required field error'}>
+        <div className={this.state.valid ? 'field' : 'require field error'}>
           {this.renderFieldLabel()}
           <div
             className={`${this.props.className}${this.state.open ? ' active visible' : ''}`}
@@ -71,7 +71,7 @@ class Dropdown extends Component {
     }
   }
   renderValidationLabel() {
-    if (!this.state.valid && this.props.required) {
+    if (!this.state.valid && this.props.require) {
       return (
         <div className="ui red pointing prompt label transition visible">
           {this.state.message}
@@ -133,7 +133,7 @@ class Dropdown extends Component {
     }));
   }
   validate(updateState = true) {
-    let valid = !(this.props.required && !this.state.value);
+    let valid = !(this.props.require && !this.state.value);
     if (this.state.valid != valid && updateState) {
       this.setState(Object.assign({}, this.state, {
         valid: valid

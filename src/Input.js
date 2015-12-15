@@ -8,20 +8,24 @@ class Input extends Component {
     type: PropTypes.string,
     validate: PropTypes.any,
     validateMessage: PropTypes.string,
-    required: PropTypes.bool,
-    requiredMessage: PropTypes.string,
+    require: PropTypes.bool,
+    requireMessage: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.string || PropTypes.number,
     placeholder: PropTypes.string || PropTypes.number,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     disabled: PropTypes.bool,
-    readOnly: PropTypes.bool
+    readOnly: PropTypes.bool,
+    maxLength: PropTypes.string || PropTypes.number,
+    name: PropTypes.string,
+    rows: PropTypes.string || PropTypes.number,
+    cols: PropTypes.string || PropTypes.number
   };
   static defaultProps = {
     type: 'text',
-    required: false,
-    requiredMessage: 'This field is required',
+    require: false,
+    requireMessage: 'This field is required',
     validateMessage: 'This field is invalid',
     diasbled: false,
     readOnly: false
@@ -29,10 +33,10 @@ class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: this.props.requiredMessage,
+      message: this.props.requireMessage,
       valid: true
     };
-    this._validTypes = ['text', 'number'];
+    this._validTypes = ['text', 'number', 'textarea'];
     this._changeTimeout = null;
     this._input = null;
   }
@@ -42,14 +46,7 @@ class Input extends Component {
         <div className={this.buildFieldClassName()}>
           {this.renderFieldLabel()}
           <div className={this.props.className}>
-            <input
-              type={this.props.type}
-              onBlur={this.handleOnBlur.bind(this)}
-              onChange={this.handleOnChange.bind(this)}
-              ref={(ref) => this._input = ref}
-              disabled={this.props.disabled}
-              readOnly={this.props.readOnly}
-            />
+            {this.renderInputByType()}
             {this.props.children}
           </div>
           {this.renderValidationLabel()}
@@ -58,9 +55,9 @@ class Input extends Component {
     );
   }
   buildFieldClassName() {
-    let required = this.props.required ? 'required' : '';
+    let require = this.props.require ? 'required' : '';
     let error = !this.state.valid ? 'error' : '';
-    return `${required} field ${error}`;
+    return `${require} field ${error}`;
   }
   renderFieldLabel() {
     if (this.props.label) {
@@ -69,10 +66,31 @@ class Input extends Component {
       );
     }
   }
+  renderInputByType() {
+    if (this.props.type === 'textarea') {
+      return (
+        <textarea
+          {...this.props}
+          onBlur={this.handleOnBlur.bind(this)}
+          onChange={this.handleOnChange.bind(this)}
+          ref={(ref) => this._input = ref}
+        />
+      );
+    } else {
+      return (
+        <input
+          {...this.props}
+          onBlur={this.handleOnBlur.bind(this)}
+          onChange={this.handleOnChange.bind(this)}
+          ref={(ref) => this._input = ref}
+        />
+      )
+    }
+  }
   renderValidationLabel() {
     if (
       !this.state.valid &&
-      (this.props.validate && this.props.errorMessage || this.props.required)
+      (this.props.validate && this.props.errorMessage || this.props.require)
     ) {
       return (
         <div className="ui red pointing prompt label transition visible">
@@ -88,7 +106,7 @@ class Input extends Component {
     this.validateOnBlur(e);
   }
   validateOnBlur(e) {
-    if (!this.props.required && this.state.valid) {
+    if (!this.props.require && this.state.valid) {
       return;
     }
     this.validate();
@@ -104,8 +122,8 @@ class Input extends Component {
   }
   validate() {
     let valid = true;
-    if (this.props.required) {
-      valid = this.validateRequired(this._input.value);
+    if (this.props.require) {
+      valid = this.validaterequire(this._input.value);
     }
     if (
       this._validTypes.indexOf(this.props.type) > -1
@@ -116,10 +134,10 @@ class Input extends Component {
     }
     return valid;
   }
-  validateRequired(value) {
+  validaterequire(value) {
     if (this._validTypes.indexOf(this.props.type) > -1 && value <= 0) {
       this.setState({
-        message: this.props.requiredMessage,
+        message: this.props.requireMessage,
         valid: false
       });
       return false;
