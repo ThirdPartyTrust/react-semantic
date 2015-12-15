@@ -113,11 +113,9 @@ class Dropdown extends Component {
     if (this._dropdown.contains(e.target) || !this.state.open) {
       return;
     }
-    this.closeMenu(() => {
-      if (this.props.onBlur instanceof Function) {
-        this.props.onBlur(this, e);
-      }
-    }.bind(this, e));
+    this.closeMenu(
+      this.props.onBlur instanceof Function ? this.props.onBlur(this, e) : null
+    );
   }
   handleChange(target, e) {
     this.setState({
@@ -138,10 +136,13 @@ class Dropdown extends Component {
     })); 
   }
   closeMenu(callback = () => {}) {
-    this.setState(Object.assign({}, this.state, {
-      open: false,
-      valid: this.validate()
-    }), callback());
+    this.setState(
+      Object.assign({}, this.state, {
+        open: false,
+        valid: this.validate()
+      }),
+      callback instanceof Function ? callback() : null
+    );
   }
   validate() {
     return !(this.props.require && !this.state.value);
