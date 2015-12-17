@@ -75,8 +75,8 @@ class Checkbox extends Component {
   }
   handleOnClick(e) {
     if (this.props.onClick instanceof Function) {
-      let preventDefault = this.props.onClick(this, e);
-      if (preventDefault) {
+      let continueDefault = this.props.onClick(this, e);
+      if (continueDefault === false) {
         return;
       }
     }
@@ -88,6 +88,9 @@ class Checkbox extends Component {
         this.props.onChange(this, e);
       }
     }.bind(this, e));
+  }
+  validate() {
+    return !(this.props.require && !this.state.checked);
   }
   getName() {
     return this.props.name;
