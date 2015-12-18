@@ -12,6 +12,7 @@ class Dropdown extends Component {
     value: PropTypes.string,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
+    defaultValue: PropTypes.string,
     disabled: PropTypes.bool,
     placeholder: PropTypes.string,
     select: PropTypes.bool
@@ -88,6 +89,11 @@ class Dropdown extends Component {
   renderChildren() {
     if (Array.isArray(this.props.children)) {
       return this.props.children.map(child => {
+        if (child.props.value === this.props.defaultValue) {
+          this.setState(Object.assign({}, state, {
+            valueContent: this.renderChild(child, false)
+          }));
+        }
         return this.renderChild(child);
       }.bind(this));
     }

@@ -3,6 +3,8 @@ import { exportComponent } from './';
 
 class Form extends Component {
   static propTypes = {
+    uiStyle: PropTypes.string,
+    className: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
     validateOnSubmit: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -11,8 +13,7 @@ class Form extends Component {
   static defaultProps = {
     onSubmit: function(){},
     validateOnSubmit: true,
-    disabled: false,
-    formData: {}
+    disabled: false
   };
   constructor(props) {
     super(props);
@@ -24,7 +25,7 @@ class Form extends Component {
   handleSubmit(e) {
     e.preventDefault();
     if (this.props.onSubmit instanceof Function) {
-      this.props.onSubmit(this.props.formData);
+      this.props.onSubmit(this.props.formData, e);
     }
   }
   render() {
