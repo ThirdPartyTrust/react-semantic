@@ -32,6 +32,7 @@ class Dropdown extends Component {
       valueContent: null,
       open: false
     }
+    this._dropdown = null;
   }
   componentWillMount() {
     window.addEventListener('click', this.handleOutsideClick.bind(this), true);
