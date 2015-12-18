@@ -28,8 +28,8 @@ class Dropdown extends Component {
     this.state = {
       message: this.props.requireMessage,
       valid: true,
-      value: null,
-      valueContent: this.renderDefaultValue.bind(this),
+      value: this.props.defaultValue,
+      valueContent: this.renderDefaultValue(this.props.defaultValue),
       open: false
     }
     this._dropdown = null;
@@ -95,33 +95,35 @@ class Dropdown extends Component {
     }
     return this.renderChild(this.props.children);
   }
-  renderChild(child, bindChange = true) {
+  renderChild(child, bindChange = true, value) {
+    let val = value ? value : this.state.value;
     return (
       <div
-        className={this.state.value === child.props.value ? 'item active selected' : 'item'}
+        className={val === child.props.value ? 'item active selected' : 'item'}
         onClick={bindChange ? this.handleChange.bind(this, child) : this.closeMenu.bind(this)}
+        key={`dropdown_option_${child.props.value}`}
       >
         {child.props.children}
       </div>
     );
   }
   renderDefaultValue() {
-    var value = null;
+    var valueComponent = null;
     if (!this.props.children) {
-      return value;
+      return valueComponent;
     }
     if (Array.isArray(this.props.children)) {
       this.props.children.map(child => {
         if (child.props.value === this.props.defaultValue) {
-          value = this.renderChild(child, false)
+          valueComponent = this.renderChild(child, false, this.props.defaultValue)
         }
-      })
+      }.bind(this))
     } else {
       if (this.props.children.props.value === this.props.defaultValue) {
-        value = this.renderChild(child, false)
+        valueComponent = this.renderChild(child, false, this.props.defaultValue)
       }
     }
-    return value;
+    return valueComponent;
   }
   handleClick(e) {
     if (this.state.open) {
