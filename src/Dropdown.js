@@ -29,7 +29,7 @@ class Dropdown extends Component {
       message: this.props.requireMessage,
       valid: true,
       value: null,
-      valueContent: null,
+      valueContent: this.renderDefaultValue.bind(this),
       open: false
     }
     this._dropdown = null;
@@ -90,11 +90,6 @@ class Dropdown extends Component {
   renderChildren() {
     if (Array.isArray(this.props.children)) {
       return this.props.children.map(child => {
-        if (child.props.value === this.props.defaultValue) {
-          this.setState(Object.assign({}, this.state, {
-            valueContent: this.renderChild(child, false)
-          }));
-        }
         return this.renderChild(child);
       }.bind(this));
     }
@@ -109,6 +104,24 @@ class Dropdown extends Component {
         {child.props.children}
       </div>
     );
+  }
+  renderDefaultValue() {
+    var value = null;
+    if (!this.props.children) {
+      return value;
+    }
+    if (Array.isArray(this.props.children)) {
+      this.props.children.map(child => {
+        if (child.props.value === this.props.defaultValue) {
+          value = this.renderChild(child, false)
+        }
+      })
+    } else {
+      if (this.props.children.props.value === this.props.defaultValue) {
+        value = this.renderChild(child, false)
+      }
+    }
+    return value;
   }
   handleClick(e) {
     if (this.state.open) {
