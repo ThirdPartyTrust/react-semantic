@@ -90,7 +90,7 @@ class Dropdown extends Component {
     if (Array.isArray(this.props.children)) {
       return this.props.children.map(child => {
         if (child.props.value === this.props.defaultValue) {
-          this.setState(Object.assign({}, state, {
+          this.setState(Object.assign({}, this.state, {
             valueContent: this.renderChild(child, false)
           }));
         }
