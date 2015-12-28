@@ -9,7 +9,7 @@ class Checkbox extends Component {
     name: PropTypes.string,
     require: PropTypes.bool,
     requireMessage: PropTypes.string,
-    label: PropTypes.string,
+    label: PropTypes.node,
     value: PropTypes.string || PropTypes.number,
     onClick: PropTypes.func,
     onChange: PropTypes.func,
