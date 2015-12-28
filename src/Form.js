@@ -35,7 +35,7 @@ class Form extends Component {
         onSubmit={this.handleSubmit.bind(this)}
       >
         <fieldset
-          disabled={this.state.disabled}
+          disabled={this.props.disabled}
           style={{border: 'none'}}
         >
           {this.props.children}

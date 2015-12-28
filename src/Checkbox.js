@@ -21,7 +21,8 @@ class Checkbox extends Component {
     disabled: false,
     require: false,
     requireMessage: 'This field is required',
-    checked: false
+    checked: false,
+    label: ''
   };
   constructor(props) {
     super(props);
@@ -67,11 +68,9 @@ class Checkbox extends Component {
     return `${require} field ${error}`;
   }
   renderFieldLabel() {
-    if (this.props.label) {
-      return (
-        <label>{this.props.label}</label>
-      );
-    }
+    return (
+      <label>{this.props.label}</label>
+    );
   }
   handleOnClick(e) {
     if (this.props.onClick instanceof Function) {

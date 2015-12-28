@@ -20,7 +20,8 @@ class Input extends Component {
     readOnly: PropTypes.bool,
     maxLength: PropTypes.string || PropTypes.number,
     rows: PropTypes.string || PropTypes.number,
-    cols: PropTypes.string || PropTypes.number
+    cols: PropTypes.string || PropTypes.number,
+    defaultValue: PropTypes.string || PropTypes.number
   };
   static defaultProps = {
     type: 'text',
