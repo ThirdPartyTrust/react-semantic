@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
+import transitions from './constants/transitions';
 
 export default function exportComponent(Component, uiElement) {
   
   class UIComponent extends React.Component {
     static propTypes = {
       uiStyle: PropTypes.string,
-      className: PropTypes.string
+      className: PropTypes.string,
+      transition: PropTypes.string
     };
     constructor(props) {
       super(props);

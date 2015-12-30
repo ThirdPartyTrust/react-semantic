@@ -57,6 +57,7 @@ class Checkbox extends Component {
               ref={(ref) => this._checkbox = ref}
             />
             {this.renderFieldLabel()}
+            {this.renderValidationLabel()}
           </div>
         </div>
       </div>
@@ -72,6 +73,15 @@ class Checkbox extends Component {
       <label>{this.props.label}</label>
     );
   }
+  renderValidationLabel() {
+    if (!this.state.valid) {
+      return (
+        <div className="ui red pointing prompt label transition visible">
+          {this.props.requireMessage}
+        </div>
+      );
+    }
+  }
   handleOnClick(e) {
     if (this.props.onClick instanceof Function) {
       let continueDefault = this.props.onClick(this, e);
@@ -83,13 +93,21 @@ class Checkbox extends Component {
       valid: this.state.valid,
       checked: !this.state.checked
     }, function(){
+      this.validate();
       if (this.props.onChange instanceof Function) {
         this.props.onChange(this, e);
       }
     }.bind(this, e));
   }
   validate() {
-    return !(this.props.require && !this.state.checked);
+    let valid = !(this.props.require && !this.state.checked);
+    if (valid !== this.state.valid) {
+      this.setState({
+        valid: valid,
+        checked: this.state.checked
+      });
+    }
+    return valid;
   }
   getName() {
     return this.props.name;
