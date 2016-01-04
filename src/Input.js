@@ -34,12 +34,21 @@ class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      value: this.props.value,
       message: this.props.requireMessage,
       valid: true
     };
+    console.log(this.state);
     this._validTypes = ['text', 'number', 'textarea', 'password'];
     this._changeTimeout = null;
     this._input = null;
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.state.value) {
+      this.setState(Object.assign({}, this.state, {
+        value: nextProps.value
+      }));
+    }
   }
   render() {
     return (
@@ -72,6 +81,7 @@ class Input extends Component {
       return (
         <textarea
           {...this.props}
+          value={this.state.value}
           children={null}
           onBlur={this.handleOnBlur.bind(this)}
           onChange={this.handleOnChange.bind(this)}
@@ -82,6 +92,7 @@ class Input extends Component {
       return (
         <input
           {...this.props}
+          value={this.state.value}
           children={null}
           onBlur={this.handleOnBlur.bind(this)}
           onChange={this.handleOnChange.bind(this)}
@@ -115,28 +126,29 @@ class Input extends Component {
     this.validate();
   }
   handleOnChange(e) {
-    window.clearTimeout(this._changeTimeout);
-    this._changeTimeout = window.setTimeout(
-      this.onChange.bind(this, e), 250
-    );
-  }
-  onChange(e) {
     if (this.props.onChange instanceof Function) {
       this.props.onChange(this, e);
     }
-    this.validate();
+    this.setState(Object.assign({}, this.state, {
+      value: e.target.value
+    }), () => {
+      window.clearTimeout(this._changeTimeout);
+      this._changeTimeout = window.setTimeout(
+        this.validate(), 250
+      );
+    }.bind(this));
   }
   validate() {
     let valid = true;
     if (this.props.require) {
-      valid = this.validaterequire(this._input.value);
+      valid = this.validaterequire(this.state.value);
     }
     if (
       this._validTypes.indexOf(this.props.type) > -1
       && this.props.validate
       && valid
     ) {
-      valid = this.validatePattern(this._input.value);
+      valid = this.validatePattern(this.state.value);
     }
     return valid;
   }
@@ -158,12 +170,14 @@ class Input extends Component {
   validatePattern(value) {
     if (value.search(this.props.validate) < 0) {
       this.setState({
+        value: this.state.value,
         message: this.props.validateMessage,
         valid: false
       });
       return false;
     } else {
       this.setState({
+        value: this.state.value,
         message: this.state.message,
         valid: true
       });
@@ -177,7 +191,7 @@ class Input extends Component {
     if (!this._input) {
       return null;
     }
-    return this._input.value;
+    return this.state.value;
   }
 }
 
