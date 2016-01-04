@@ -19,9 +19,9 @@ export default class Textarea extends Component {
     return this._textarea.validate();
   }
   getName() {
-    return this._dropdown.getName();
+    return this._textarea.getName();
   }
   getValue() {
-    return this._dropdown.getValue();
+    return this._textarea.getValue();
   }
 }
