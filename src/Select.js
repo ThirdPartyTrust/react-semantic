@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent, Dropdown } from './';
+import { Dropdown } from './';
 
 export default class Select extends Component {
   static propTypes = {

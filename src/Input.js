@@ -38,7 +38,6 @@ class Input extends Component {
       message: this.props.requireMessage,
       valid: true
     };
-    console.log(this.state);
     this._validTypes = ['text', 'number', 'textarea', 'password'];
     this._changeTimeout = null;
     this._input = null;
