@@ -6,26 +6,16 @@ class Form extends Component {
     uiStyle: PropTypes.string,
     className: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
-    validateOnSubmit: PropTypes.bool,
-    disabled: PropTypes.bool,
-    formData: PropTypes.object
+    disabled: PropTypes.bool
   };
   static defaultProps = {
-    onSubmit: function(){},
-    validateOnSubmit: true,
+    onSubmit: () => {},
     disabled: false
   };
-  constructor(props) {
-    super(props);
-    this.state = {
-      formData: this.props.formData,
-      formError: this.props.formError
-    };
-  }
   handleSubmit(e) {
     e.preventDefault();
     if (this.props.onSubmit instanceof Function) {
-      this.props.onSubmit(this.props.formData, e);
+      this.props.onSubmit(e);
     }
   }
   render() {

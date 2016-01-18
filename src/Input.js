@@ -29,7 +29,8 @@ class Input extends Component {
     requireMessage: 'This field is required',
     validateMessage: 'This field is invalid',
     diasbled: false,
-    readOnly: false
+    readOnly: false,
+    value: ''
   };
   constructor(props) {
     super(props);

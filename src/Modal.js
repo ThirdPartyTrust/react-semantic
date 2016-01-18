@@ -69,7 +69,9 @@ export default class Modal extends Component {
           >
             <i className='close icon' onClick={this.close.bind(this)}></i>
             {this.setHeader()}
-            {this.props.children}
+            <div className="content">
+              {this.props.children}
+            </div>
           </div>
         </div>
       </div>
