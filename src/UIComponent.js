@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import transitions from './constants/transitions';
+import classNames from 'classnames';
 
 export default function exportComponent(Component, uiElement) {
   
@@ -7,12 +8,32 @@ export default function exportComponent(Component, uiElement) {
     static propTypes = {
       uiStyle: PropTypes.string,
       className: PropTypes.string,
-      transition: PropTypes.string
+      transition: PropTypes.string,
+      transitionActive: PropTypes.bool,
+      onTransitionStart: PropTypes.func,
+      onTransitionEnd: PropTypes.func,
+      visible: PropTypes.bool
     };
+    static defaultProps = {
+      visible: true,
+      transitionActive: false
+    }
     constructor(props) {
       super(props);
-      this.state = {};
+      this.state = {
+        visible: true,
+        transitionActive: props.transitionActive
+      };
       this._component = null;
+      this._transitionTimeout = null;
+    }
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.transitionActive !== this.state.transitionActive) {
+        this.setState({
+          visible: this.state.visible,
+          transitionActive: nextProps.transitionActive
+        });
+      }
     }
     render() {
       return (
@@ -21,11 +42,13 @@ export default function exportComponent(Component, uiElement) {
     }
     buildStyle() {
       let uiElementStyle = this.buildElementStyle(uiElement);
+      let transitionStyle = this.buildTransitionStyle();
       let elementStyle = uiElementStyle ? ` ${uiElementStyle}` : '';
       let uiStyle = this.props.uiStyle ? ` ${this.props.uiStyle}` : '';
       let uiElementClass = uiElement ? ` ${uiElement}` : '';
       let className = this.props.className ? ` ${this.props.className}` : '';
-      return `ui${elementStyle}${uiStyle}${uiElementClass}${className}`;
+      let transitionClass = transitionStyle ? ` ${transitionStyle}` : '';
+      return `ui${elementStyle}${uiStyle}${uiElementClass}${className}${transitionClass}`;
     }
     buildElementStyle(uiElement) {
       if (!this.props.children) {
@@ -38,10 +61,44 @@ export default function exportComponent(Component, uiElement) {
           return;
       }
     }
+    buildTransitionStyle() {
+      if (!this.props.transition) {
+        return;
+      }
+      if (!transitions[this.props.transition]) {
+        return;
+      }
+      let toggleVisible = transitions[this.props.transition].toggleVisible;
+      if (this.state.transitionActive) {
+        this.setTransitionTimeout(toggleVisible);
+      }
+      return classNames('transition', {
+        visible: this.state.visible || this.state.transitionActive,
+        hidden: !this.state.visible && !this.state.transitionActive,
+        animating: this.state.transitionActive,
+        in: !this.state.visible && this.state.transitionActive && toggleVisible,
+        out: this.state.visible && this.state.transitionActive && toggleVisible,
+        [this.props.transition]: this.state.transitionActive
+      });
+    }
+    setTransitionTimeout(toggleVisible) {
+      window.clearTimeout(this._transitionTimeout);
+      if (this.props.onTransitionStart instanceof Function) {
+        this.props.onTransitionStart();
+      }
+      this._transitionTimeout = window.setTimeout(() => {
+        this.setState({
+          visible: toggleVisible ? !this.state.visible : this.state.visible,
+          transitionActive: !this.state.transitionActive
+        });
+        if (this.props.onTransitionEnd instanceof Function) {
+          this.props.onTransitionEnd();
+        }
+      }.bind(this), 300);
+    }
     buildInputStyle() {
       var labelCount = 0;
       var iconCount = 0;
-      var classString = '';
       if (Object.prototype.toString.call(this.props.children) === '[object Array]') {
         this.props.children.map(child => {
           if (child.props.uiElement === 'label') {
@@ -52,16 +109,11 @@ export default function exportComponent(Component, uiElement) {
           }
         });
       }
-      if (labelCount > 1) {
-        classString += 'right ';
-      }
-      if (labelCount >= 1) {
-        classString += 'labeled ';
-      }
-      if (iconCount > 0 && labelCount <= 1) {
-        classString += 'icon ';
-      }
-      return classString;
+      return classNames({
+        right: labelCount > 1,
+        labeled: labelCount >= 1,
+        icon: iconCount > 0 && labelCount <=1
+      });
     }
     validate() {
       if (this._component.validate instanceof Function) {
