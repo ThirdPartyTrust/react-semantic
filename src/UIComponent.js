@@ -1,119 +1,144 @@
 import React, { PropTypes } from 'react';
-import transitions from './constants/transitions';
+import vfx from './constants/visualEffects';
 import classNames from 'classnames';
 
-export default function exportComponent(Component, uiElement) {
-  
-  class UIComponent extends React.Component {
+export default function exportUI(Component, componentName) {
+  class ComponentUI extends React.Component {
     static propTypes = {
       uiStyle: PropTypes.string,
       className: PropTypes.string,
       transition: PropTypes.string,
-      transitionActive: PropTypes.bool,
+      visible: PropTypes.bool,
       onTransitionStart: PropTypes.func,
       onTransitionEnd: PropTypes.func,
-      visible: PropTypes.bool
+      animation: PropTypes.string,
+      animate: PropTypes.bool,
+      onAnimationStart: PropTypes.func,
+      onAnimationEnd: PropTypes.func
     };
     static defaultProps = {
       visible: true,
-      transitionActive: false
-    }
+      animate: false
+    };
     constructor(props) {
       super(props);
       this.state = {
-        visible: true,
-        transitionActive: props.transitionActive
+        visible: this.props.visible,
+        animating: this.props.animate,
+        animation: this.props.transition || this.props.animation
       };
       this._component = null;
-      this._transitionTimeout = null;
+      this._animationTimeout = null;
     }
     componentWillReceiveProps(nextProps) {
-      if (nextProps.transitionActive !== this.state.transitionActive) {
-        this.setState({
-          visible: this.state.visible,
-          transitionActive: nextProps.transitionActive
-        });
+      let nextState = {
+        visible: this.state.visible,
+        animating: this.state.animating,
+        animation: this.state.animation
+      };
+      if (nextProps.visible !== this.state.visible) {
+        nextState.visible = nextProps.visible;
       }
+      if (this.props.animation && nextProps.animate !== this.state.animating) {
+        nextState.animating = nextProps.animate;
+        nextState.animation = this.props.animation;
+      }
+      if (this.props.transition && nextProps.visible !== this.state.visible) {
+        nextState.animating = true;
+        nextState.animation = this.props.transition;
+      }
+      this.setState(nextState);
     }
     render() {
       return (
-        <Component ref={(ref) => this._component = ref} className={this.buildStyle()} {...this.props} {...this.state}/>
+        <Component
+          {...this.props}
+          {...this.state}
+          className={this.buildStyle()}
+          ref={(ref) => this._component = ref}
+        />
       );
     }
     buildStyle() {
-      let uiElementStyle = this.buildElementStyle(uiElement);
-      let transitionStyle = this.buildTransitionStyle();
-      let elementStyle = uiElementStyle ? ` ${uiElementStyle}` : '';
-      let uiStyle = this.props.uiStyle ? ` ${this.props.uiStyle}` : '';
-      let uiElementClass = uiElement ? ` ${uiElement}` : '';
-      let className = this.props.className ? ` ${this.props.className}` : '';
-      let transitionClass = transitionStyle ? ` ${transitionStyle}` : '';
-      return `ui${elementStyle}${uiStyle}${uiElementClass}${className}${transitionClass}`;
+      const { uiStyle, className } = this.props;
+      let styles = [
+        this.buildElementStyle(componentName),
+        uiStyle,
+        componentName,
+        className,
+        this.buildAnimationStyle()
+      ];
+      return classNames('ui', styles);
     }
     buildElementStyle(uiElement) {
-      if (!this.props.children) {
+      let styleFunctions = {
+        input: this.buildInputStyle
+      };
+      if (!styleFunctions[uiElement] || !this.props.children) {
         return;
       }
-      switch (uiElement) {
-        case 'input':
-          return this.buildInputStyle();
-        default:
-          return;
-      }
-    }
-    buildTransitionStyle() {
-      if (!this.props.transition) {
-        return;
-      }
-      if (!transitions[this.props.transition]) {
-        return;
-      }
-      let toggleVisible = transitions[this.props.transition].toggleVisible;
-      if (this.state.transitionActive) {
-        this.setTransitionTimeout(toggleVisible);
-      }
-      return classNames('transition', {
-        visible: this.state.visible || this.state.transitionActive,
-        hidden: !this.state.visible && !this.state.transitionActive,
-        animating: this.state.transitionActive,
-        in: !this.state.visible && this.state.transitionActive && toggleVisible,
-        out: this.state.visible && this.state.transitionActive && toggleVisible,
-        [this.props.transition]: this.state.transitionActive
-      });
-    }
-    setTransitionTimeout(toggleVisible) {
-      window.clearTimeout(this._transitionTimeout);
-      if (this.props.onTransitionStart instanceof Function) {
-        this.props.onTransitionStart();
-      }
-      this._transitionTimeout = window.setTimeout(() => {
-        this.setState({
-          visible: toggleVisible ? !this.state.visible : this.state.visible,
-          transitionActive: !this.state.transitionActive
-        });
-        if (this.props.onTransitionEnd instanceof Function) {
-          this.props.onTransitionEnd();
-        }
-      }.bind(this), 300);
+      return styleFunctions[uiElement].bind(this);
     }
     buildInputStyle() {
       var labelCount = 0;
       var iconCount = 0;
-      if (Object.prototype.toString.call(this.props.children) === '[object Array]') {
-        this.props.children.map(child => {
-          if (child.props.uiElement === 'label') {
+      if (Array.isArray(this.props.children)) {
+        for (var child in this.props.children) {
+         if (child.props.uiElement === 'label') {
             labelCount++;
           }
           if (child.props.uiElement === 'icon') {
             iconCount++;
           }
-        });
+        };
       }
       return classNames({
         right: labelCount > 1,
         labeled: labelCount >= 1,
         icon: iconCount > 0 && labelCount <=1
       });
+    }
+    buildAnimationStyle() {
+      if (
+        !this.state.animation
+        && vfx.transitions.indexOf(this.state.animation) === -1
+        && vfx.animations.indexOf(this.state.animation) === -1
+      ) {
+        return;
+      }
+      let isTransition = vfx.animations.indexOf(this.state.animation) === -1;
+      if (this.state.animating) {
+        this.setAnimationTimeout(isTransition);
+      }
+      return classNames('transition', {
+        visible: this.state.visible || this.state.animating,
+        hidden: !this.state.visible && !this.state.animating && isTransition,
+        animating: this.state.animating,
+        in: this.state.visible && this.state.animating && isTransition,
+        out: !this.state.visible && this.state.animating && isTransition,
+        [this.state.animation]: this.state.animating
+      });
+    }
+    setAnimationTimeout(isTransition = false) {
+      window.clearTimeout(this._animationTimeout);
+      if (isTransition && this.props.onTransitionStart instanceof Function) {
+        this.props.onTransitionStart();
+      }
+      if (!isTransition && this.props.onAnimationStart instanceof Function) {
+        this.props.onAnimationStart();
+      }
+      this._animationTimeout = window.setTimeout((isTransition) => {
+        this.setState({
+          visible: this.state.visible,
+          animating: !this.state.animating
+        });
+        if (isTransition && this.props.onTransitionEnd instanceof Function) {
+          this.props.onTransitionEnd();
+        }
+        if (!isTransition && this.props.onAnimationEnd instanceof Function) {
+          this.props.onAnimationEnd();
+        }
+      }.bind(this, isTransition), 300);
     }
     validate() {
       if (this._component.validate instanceof Function) {
@@ -137,7 +162,5 @@ export default function exportComponent(Component, uiElement) {
       }
     }
   }
-
-  return UIComponent;
-
+  return ComponentUI;
 }

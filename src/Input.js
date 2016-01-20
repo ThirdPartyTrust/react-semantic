@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportComponent, Label } from './';
+import classNames from 'classnames';
 
 class Input extends Component {
   static propTypes = {
@@ -29,7 +30,8 @@ class Input extends Component {
     requireMessage: 'This field is required',
     validateMessage: 'This field is invalid',
     diasbled: false,
-    readOnly: false
+    readOnly: false,
+    value: ''
   };
   constructor(props) {
     super(props);
@@ -64,9 +66,11 @@ class Input extends Component {
     );
   }
   buildFieldClassName() {
-    let require = this.props.require ? 'required' : '';
-    let error = !this.state.valid ? 'error' : '';
-    return `${require} field ${error}`;
+    return classNames({
+      required: this.props.require,
+      field: true,
+      error: !this.state.valid
+    });
   }
   renderFieldLabel() {
     if (this.props.label) {
@@ -101,14 +105,15 @@ class Input extends Component {
     }
   }
   renderValidationLabel() {
-    if (
-      !this.state.valid &&
-      (this.props.validate && this.props.errorMessage || this.props.require)
-    ) {
+    if (this.props.validate || this.props.require) {
       return (
-        <div className="ui red pointing prompt label transition visible">
+        <Label
+          uiStyle="red pointing prompt"
+          transition="scale"
+          visible={!this.state.valid}
+        >
           {this.state.message}
-        </div>
+        </Label>
       );
     }
   }
@@ -133,14 +138,14 @@ class Input extends Component {
     }), () => {
       window.clearTimeout(this._changeTimeout);
       this._changeTimeout = window.setTimeout(
-        this.validate(), 250
+        this.validate(), 300
       );
     }.bind(this));
   }
   validate() {
     let valid = true;
     if (this.props.require) {
-      valid = this.validaterequire(this.state.value);
+      valid = this.validateRequire(this.state.value);
     }
     if (
       this._validTypes.indexOf(this.props.type) > -1
@@ -151,7 +156,7 @@ class Input extends Component {
     }
     return valid;
   }
-  validaterequire(value) {
+  validateRequire(value) {
     if (this._validTypes.indexOf(this.props.type) > -1 && value <= 0) {
       this.setState({
         message: this.props.requireMessage,
