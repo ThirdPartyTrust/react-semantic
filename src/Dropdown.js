@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportComponent, Menu, Label } from './';
+import classNames from 'classnames';
 
 class Dropdown extends Component {
   static propTypes = {
@@ -30,7 +31,8 @@ class Dropdown extends Component {
       valid: true,
       value: this.props.defaultValue,
       valueContent: this.renderDefaultValue(this.props.defaultValue),
-      open: false
+      open: false,
+      transition: 'slide down'
     }
     this._dropdown = null;
   }
@@ -46,7 +48,7 @@ class Dropdown extends Component {
         <div className={this.buildFieldClassName()}>
           {this.renderFieldLabel()}
           <div
-            className={`${this.props.className}${this.state.open ? ' active visible' : ''}`}
+            className={this.buildDropdownClassName()}
             onClick={this.handleClick.bind(this)}
             ref={(ref) => this._dropdown = ref}
           >
@@ -54,12 +56,12 @@ class Dropdown extends Component {
             <div className={this.props.select && !this.state.valueContent ? 'default text' : 'text'}>
               {this.state.valueContent ? this.state.valueContent : this.props.placeholder}
             </div>
-            <div
-              className={this.state.open ? 'menu active visible' : 'menu'}
-              style={this.state.open ? {display: 'block'} : {}}
+            <Menu
+              transition={this.state.transition}
+              visible={this.state.open}
             >
               {this.renderChildren()}
-            </div>
+            </Menu>
           </div>
           {this.renderValidationLabel()}
         </div>
@@ -78,12 +80,23 @@ class Dropdown extends Component {
       );
     }
   }
+  buildDropdownClassName() {
+    return classNames(this.props.className, {
+      active: this.state.open,
+      visible: this.state.open,
+      upward: this.state.transition === 'slide up'
+    });
+  }
   renderValidationLabel() {
-    if (!this.state.valid && this.props.require) {
+    if (this.props.require) {
       return (
-        <div className="ui red pointing prompt label transition visible">
+        <Label
+          uiStyle="red pointing prompt"
+          transition="scale"
+          visible={!this.state.valid}
+        >
           {this.state.message}
-        </div>
+        </Label>
       );
     }
   }
@@ -129,7 +142,16 @@ class Dropdown extends Component {
     if (this.state.open) {
       return;
     }
-    this.openMenu();
+    let offsetValues = this._dropdown.getBoundingClientRect();
+    let transition = this.state.transition;
+    if ((window.innerHeight - 210) < offsetValues.bottom) {
+      transition = 'slide up';
+    } else {
+      transition = 'slide down';
+    }
+    this.setState(Object.assign({}, this.state, {transition: transition}), () => {
+      this.openMenu();
+    }.bind(this));
   }
   handleOutsideClick = (e) => {
     if (this._dropdown.contains(e.target) || !this.state.open) {
@@ -145,7 +167,8 @@ class Dropdown extends Component {
       valid: true,
       value: target.props.value,
       valueContent: this.renderChild(target, false),
-      open: false
+      open: false,
+      transition: this.state.transition
     }, function() {
       if (this.props.onChange instanceof Function) {
         this.props.onChange(this, e);

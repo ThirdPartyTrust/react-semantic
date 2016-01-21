@@ -16,3 +16,4 @@ export Radio from './Radio';
 export Slider from './Slider';
 export Toggle from './Toggle';
 export Message from './Message';
+export Menu from './Menu';

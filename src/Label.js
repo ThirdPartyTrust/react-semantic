@@ -2,13 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import exportComponent from './UIComponent';
 
 class Label extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    uiStyle: PropTypes.string
-  };
   render() {
     return (
-      <div className={this.props.className}>
+      <div {...this.props}>
         {this.props.children}
       </div>
     );

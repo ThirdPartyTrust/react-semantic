@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { exportComponent } from './';
 
-class Grid extends Component {
+class Menu extends Component {
   render() {
     return (
       <div {...this.props}>
@@ -11,4 +11,4 @@ class Grid extends Component {
   }
 }
 
-export default exportComponent(Grid, 'grid');
+export default exportComponent(Menu, 'menu');
