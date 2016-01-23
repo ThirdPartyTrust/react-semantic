@@ -39,11 +39,6 @@ class Dropdown extends Component {
     this._dropdown = null;
     this._menu = null;
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.valid !== this.state.valid) {
-      this.setState(Object.assign({}, this.state, {valid: nextProps.valid}));
-    }
-  }
   componentWillMount() {
     window.addEventListener('click', this.handleOutsideClick.bind(this), true);
   }
