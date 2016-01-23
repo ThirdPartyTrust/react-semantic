@@ -108,7 +108,7 @@ class Input extends Component {
     if (this.props.validate || this.props.require) {
       return (
         <Label
-          uiStyle="red rpointing prompt"
+          uiStyle="red pointing prompt"
           transition="scale"
           visible={!this.state.valid}
         >
