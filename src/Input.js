@@ -108,7 +108,7 @@ class Input extends Component {
     if (this.props.validate || this.props.require) {
       return (
         <Label
-          uiStyle="red pointing prompt"
+          uiStyle="red rpointing prompt"
           transition="scale"
           visible={!this.state.valid}
         >
@@ -119,11 +119,11 @@ class Input extends Component {
   }
   handleOnBlur(e) {
     if (this.props.onBlur instanceof Function) {
-      this.props.onBlur(e, this);
+      this.props.onBlur(this, e);
     }
-    this.validateOnBlur(e);
+    this.validateOnBlur();
   }
-  validateOnBlur(e) {
+  validateOnBlur() {
     if (!this.props.require && this.state.valid) {
       return;
     }
