@@ -1,17 +1,20 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 export default class Modal extends Component {
   static propTypes = {
     show: PropTypes.bool,
     closeOnEsc: PropTypes.bool,
     header: PropTypes.string,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    bodyClass: PropTypes.string
   };
   static defaultProps = {
     show: false,
     closeOnEsc: true,
     header: null,
-    onClose: function(){}
+    onClose: () => {},
+    bodyClass: 'modals'
   };
   constructor(props) {
     super(props);
@@ -19,6 +22,7 @@ export default class Modal extends Component {
       show: false,
       closing: false
     };
+    this._modal = null;
   }
   componentWillReceiveProps(newProps) {
     if (!newProps.show && this.state.show) {
@@ -27,12 +31,17 @@ export default class Modal extends Component {
       this.setState({
         show: newProps.show,
         closing: this.state.closing
-      });
+      }, () => {
+        this.setBodyClass();
+      }.bind(this));
     }
+  }
+  componentWillUnmount() {
+    this.setBodyClass(false);
   }
   close() {
     this.setClosing();
-    setTimeout(function(){
+    setTimeout(() => {
       this.setClosed();
     }.bind(this), 500);
   }
@@ -40,7 +49,8 @@ export default class Modal extends Component {
     this.setState({
       show: false,
       closing: false
-    }, function() {
+    }, () => {
+      this.setBodyClass();
       this.props.onClose();
     }.bind(this));
   }
@@ -48,6 +58,15 @@ export default class Modal extends Component {
     this.setState({
       show: true,
       closing: true
+    });
+  }
+  setBodyClass(show = null) {
+    let showState = show === null ? this.state.show : show;
+    let bodyClassNames = document.body.className.replace(
+      this.props.bodyClass, ''
+    );
+    document.body.className = classNames(bodyClassNames, {
+      [this.props.bodyClass]: showState
     });
   }
   setHeader() {
@@ -66,6 +85,7 @@ export default class Modal extends Component {
           <div
             className={'ui standard test modal transition visible active scale ' + (!this.state.closing ? 'in' : 'out')}
             style={{top: '20%'}}
+            ref={(ref) => this._modal = ref}
           >
             <i className='close icon' onClick={this.close.bind(this)}></i>
             {this.setHeader()}

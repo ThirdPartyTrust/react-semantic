@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { exportComponent, Menu, Label } from './';
 import classNames from 'classnames';
 
@@ -32,9 +33,16 @@ class Dropdown extends Component {
       value: this.props.defaultValue,
       valueContent: this.renderDefaultValue(this.props.defaultValue),
       open: false,
-      transition: 'slide down'
+      transition: 'slide down',
+      renderHeight: null
     }
     this._dropdown = null;
+    this._menu = null;
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.valid !== this.state.valid) {
+      this.setState(Object.assign({}, this.state, {valid: nextProps.valid}));
+    }
   }
   componentWillMount() {
     window.addEventListener('click', this.handleOutsideClick.bind(this), true);
@@ -59,6 +67,8 @@ class Dropdown extends Component {
             <Menu
               transition={this.state.transition}
               visible={this.state.open}
+              style={!this.state.renderHeight ? {display:'block', visibility: 'hidden'} : null}
+              ref={(ref) => this._menu = ref}
             >
               {this.renderChildren()}
             </Menu>
@@ -142,18 +152,28 @@ class Dropdown extends Component {
     if (this.state.open) {
       return;
     }
+    let renderHeight = this.state.renderHeight;
     let offsetValues = this._dropdown.getBoundingClientRect();
     let transition = this.state.transition;
-    if ((window.innerHeight - 210) < offsetValues.bottom) {
+    let menuEl = ReactDOM.findDOMNode(this._menu);
+    if (!renderHeight) {
+      renderHeight = menuEl.offsetHeight;
+    }
+    if ((window.innerHeight - renderHeight) < offsetValues.bottom) {
       transition = 'slide up';
     } else {
       transition = 'slide down';
     }
-    this.setState(Object.assign({}, this.state, {transition: transition}), () => {
+    this.setState(Object.assign({}, this.state, {
+      transition: transition, renderHeight: renderHeight
+    }), () => {
       this.openMenu();
     }.bind(this));
   }
   handleOutsideClick = (e) => {
+    if (!this._dropdown) {
+      return;
+    }
     if (this._dropdown.contains(e.target) || !this.state.open) {
       return;
     }
@@ -189,8 +209,17 @@ class Dropdown extends Component {
       callback instanceof Function ? callback() : null
     );
   }
-  validate() {
-    return !(this.props.require && !this.state.value);
+  validate(silent = false) {
+    let isValid = !(this.props.require && !this.state.value);
+    if (silent) {
+      return isValid;
+    }
+    this.setState(
+      Object.assign({}, this.state, {
+        valid: isValid
+      })
+    );
+    return isValid;
   }
   getName() {
     return this.props.name;

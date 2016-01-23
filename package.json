@@ -26,11 +26,11 @@
     "webpack": "^1.9.6",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.0.0",
-    "css-loader": "latest"
+    "css-loader": "latest",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "dependencies": {
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0",
     "classnames": "^2.2.1"
   }
 }
