@@ -17,3 +17,8 @@ export Slider from './Slider';
 export Toggle from './Toggle';
 export Message from './Message';
 export Menu from './Menu';
+export Popup from './Popup';
+export PopupTrigger from './PopupTrigger';
+export Header from './Header';
+export Content from './Content';
+export Actions from './Actions';
