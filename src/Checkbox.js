@@ -113,7 +113,7 @@ class Checkbox extends Component {
     return this.props.name;
   }
   getValue() {
-    return this._checkbox.value;
+    return this.state.checked;
   }
 }
 
