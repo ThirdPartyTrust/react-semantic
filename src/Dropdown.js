@@ -53,7 +53,7 @@ class Dropdown extends Component {
           <div
             className={this.buildDropdownClassName()}
             onClick={this.handleClick.bind(this)}
-            ref={(ref) => this._dropdown = ref}
+            ref={ref => this._dropdown = ref}
           >
             <i className="dropdown icon" onClick={this.state.open ? this.closeMenu.bind(this) : null}></i>
             <div className={this.props.select && !this.state.valueContent ? 'default text' : 'text'}>
@@ -63,7 +63,7 @@ class Dropdown extends Component {
               transition={this.state.transition}
               visible={this.state.open}
               style={!this.state.renderHeight ? {display:'block', visibility: 'hidden'} : null}
-              ref={(ref) => this._menu = ref}
+              ref={ref => this._menu = ref}
             >
               {this.renderChildren()}
             </Menu>
@@ -106,12 +106,15 @@ class Dropdown extends Component {
     }
   }
   renderChildren() {
-    if (Array.isArray(this.props.children)) {
-      return this.props.children.map(child => {
-        return this.renderChild(child);
-      }.bind(this));
+    if (!this.props.children) {
+      return;
     }
-    return this.renderChild(this.props.children);
+    if (!Array.isArray(this.props.children)) {
+      return this.renderChild(this.props.children);
+    }
+    return this.props.children.map(child => {
+      return this.renderChild(child);
+    }.bind(this));
   }
   renderChild(child, bindChange = true, value) {
     let val = value ? value : this.state.value;

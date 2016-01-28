@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { exportComponent, Checkbox } from './';
+import classNames from 'classnames';
 
 export default class Toggle extends Component {
   static propTypes = {
@@ -10,10 +11,13 @@ export default class Toggle extends Component {
     return (
       <Checkbox
         {...this.props}
-        uiStyle={this.props.uiStyle ? `${this.props.uiStyle} toggle` : 'toggle'}
+        uiStyle={this.buildStyle()}
       >
         {this.props.children}
       </Checkbox>
     );
+  }
+  buildStyle() {
+    return classNames(this.props.uiStyle, 'toggle');
   }
 }
