@@ -19,7 +19,7 @@ export default class Modal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      show: false,
+      show: this.props.show,
       closing: false
     };
     this._modal = null;
@@ -83,15 +83,13 @@ export default class Modal extends Component {
       <div style={{display: !this.state.show ? 'none' : 'block'}}>
         <div className={'ui dimmer modals visible active page transition fade ' + (!this.state.closing ? 'in' : 'out')}>
           <div
-            className={'ui standard test modal transition visible active scale ' + (!this.state.closing ? 'in' : 'out')}
+            className={'ui standard modal transition visible active scale ' + (!this.state.closing ? 'in' : 'out')}
             style={{top: '20%'}}
             ref={(ref) => this._modal = ref}
           >
             <i className='close icon' onClick={this.close.bind(this)}></i>
             {this.setHeader()}
-            <div className="content">
-              {this.props.children}
-            </div>
+            {this.props.children}
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ class Input extends Component {
     validateMessage: PropTypes.string,
     require: PropTypes.bool,
     requireMessage: PropTypes.string,
-    label: PropTypes.string,
+    label: PropTypes.any,
     value: PropTypes.string || PropTypes.number,
     placeholder: PropTypes.string || PropTypes.number,
     onChange: PropTypes.func,

@@ -55,7 +55,11 @@ export default class PopupTrigger extends Component {
     );
   }
   renderPopupContent() {
-    const { content } = this.props; 
+    const { content } = this.props;
+    if (!content) {
+      console.error('react-semantic: PopupTrigger prop "content" required');
+      return;
+    }
     return React.cloneElement(content, {
       transition: content.props.transition || 'scale',
       visible: this.state.contentVisible,

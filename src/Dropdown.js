@@ -10,7 +10,7 @@ class Dropdown extends Component {
     require: PropTypes.bool,
     name: PropTypes.string,
     requireMessage: PropTypes.string,
-    label: PropTypes.string,
+    label: PropTypes.any,
     value: PropTypes.string,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
