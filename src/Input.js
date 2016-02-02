@@ -30,16 +30,15 @@ class Input extends Component {
     requireMessage: 'This field is required',
     validateMessage: 'This field is invalid',
     diasbled: false,
-    readOnly: false,
-    value: ''
+    readOnly: false
+  };
+  state = {
+    value: this.props.value || this.props.defaultValue,
+    message: this.props.requireMessage,
+    valid: true
   };
   constructor(props) {
     super(props);
-    this.state = {
-      value: this.props.value,
-      message: this.props.requireMessage,
-      valid: true
-    };
     this._validTypes = ['text', 'number', 'textarea', 'password'];
     this._changeTimeout = null;
     this._input = null;
