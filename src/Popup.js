@@ -17,7 +17,7 @@ class Popup extends Component {
         {this.props.children}
       </div>
     );
-  }
-}
+  };
+};
 
 export default exportComponent(Popup, 'popup');

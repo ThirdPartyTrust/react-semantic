@@ -44,7 +44,7 @@ class Input extends Component {
     this._input = null;
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.state.value) {
+    if (nextProps.value && nextProps.value !== this.state.value) {
       this.setState(Object.assign({}, this.state, {
         value: nextProps.value
       }));
@@ -156,14 +156,16 @@ class Input extends Component {
     return valid;
   }
   validateRequire(value) {
-    if (this._validTypes.indexOf(this.props.type) > -1 && value <= 0) {
+    if (!value || this._validTypes.indexOf(this.props.type) > -1 && value <= 0) {
       this.setState({
+        value: this.state.value,
         message: this.props.requireMessage,
         valid: false
       });
       return false;
     } else {
       this.setState({
+        value: this.state.value,
         message: this.state.message,
         valid: true
       });
