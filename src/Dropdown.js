@@ -45,12 +45,20 @@ class Dropdown extends Component {
   componentWillUnmount() {
     window.removeEventListener('click', this.handleOutsideClick.bind(this), true);
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.children && this.props.defaultValue) {
+      this.setState(Object.assign({}, this.state, {
+        valueContent: this.renderDefaultValue(this.props.defaultValue)
+      }));
+    }
+  }
   render() {
     return (
       <div className="ui form">
         <div className={this.buildFieldClassName()}>
           {this.renderFieldLabel()}
           <div
+            tabIndex="0"
             className={this.buildDropdownClassName()}
             onClick={this.handleClick.bind(this)}
             ref={ref => this._dropdown = ref}
@@ -74,9 +82,11 @@ class Dropdown extends Component {
     );
   }
   buildFieldClassName() {
-    let require = this.props.require ? 'required' : '';
-    let error = !this.state.valid ? 'error' : '';
-    return `${require} field ${error}`;
+    return classNames({
+      required: this.props.require,
+      field: true,
+      error: !this.state.valid
+    });
   }
   renderFieldLabel() {
     if (this.props.label) {
