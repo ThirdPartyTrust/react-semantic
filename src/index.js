@@ -22,3 +22,4 @@ export PopupTrigger from './PopupTrigger';
 export Header from './Header';
 export Content from './Content';
 export Actions from './Actions';
+export Segment from './Segment';
