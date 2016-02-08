@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { Popup, exportComponent } from './';
+import { Popup } from './';
 import classNames from 'classnames';
 import offset from 'document-offset';
 

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent, Radio } from './';
+import { Radio } from './';
 import classNames from 'classnames';
 
 export default class RadioGroup extends Component {
@@ -19,8 +19,10 @@ export default class RadioGroup extends Component {
       <div className="ui form">
         <div className={this.buildFieldClassName()}>
           {this.renderFieldLabel()}
-
-          {this.props.children}
+          <div>
+            {this.props.children}
+          </div>
+          {this.renderValidationLabel()}
         </div>
       </div>
     );

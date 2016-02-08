@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import exportComponent from './UIComponent';
+import { exportUI } from './';
 
 class Icon extends Component {
   render() {
@@ -9,4 +9,4 @@ class Icon extends Component {
   }
 }
 
-export default exportComponent(Icon, 'icon');
+export default exportUI(Icon, 'icon');

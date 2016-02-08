@@ -1,18 +1,17 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportUI } from './';
 
 class Column extends Component {
   static propTypes = {
-    className: PropTypes.string,
     uiStyle: PropTypes.string
   };
   render() {
     return (
-      <div className={this.props.className}>
+      <div {...this.props}>
         {this.props.children}
       </div>
     );
   }
 }
 
-export default exportComponent(Column, 'column');
+export default exportUI(Column, 'column');

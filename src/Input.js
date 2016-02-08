@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent, Label } from './';
+import { exportUI, Label } from './';
 import classNames from 'classnames';
 
 class Input extends Component {
@@ -200,4 +200,4 @@ class Input extends Component {
   }
 }
 
-export default exportComponent(Input, 'input');
+export default exportUI(Input, 'input');

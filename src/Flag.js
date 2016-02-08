@@ -1,7 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import exportComponent from './UIComponent';
+import { exportUI } from './';
 
-class Flag extends Component {
+class Icon extends Component {
+  static propTypes = {
+    uiStyle: PropTypes.string
+  };
   render() {
     return (
       <i {...this.props}/>
@@ -9,4 +12,4 @@ class Flag extends Component {
   }
 }
 
-export default exportComponent(Flag, 'flag');
+export default exportUI(Icon, 'icon');

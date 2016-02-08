@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportUI } from './';
 
 class Checkbox extends Component {
   static propTypes = {
@@ -117,4 +117,4 @@ class Checkbox extends Component {
   }
 }
 
-export default exportComponent(Checkbox, 'checkbox');
+export default exportUI(Checkbox, 'checkbox');

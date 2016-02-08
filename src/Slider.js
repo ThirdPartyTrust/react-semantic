@@ -1,16 +1,16 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent, Checkbox } from './';
+import classNames from 'classnames';
+import { Checkbox } from './';
 
 export default class Slider extends Component {
   static propTypes = {
-    uiStyle: PropTypes.string,
-    className: PropTypes.string
+    uiStyle: PropTypes.string
   };
   render() {
     return (
       <Checkbox
         {...this.props}
-        uiStyle={this.props.uiStyle ? `${this.props.uiStyle} slider` : 'slider'}
+        uiStyle={classNames(this.props.uiStyle, 'slider')}
       >
         {this.props.children}
       </Checkbox>

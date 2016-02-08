@@ -1,4 +1,4 @@
-export exportComponent from './UIComponent';
+export exportUI from './UIComponent';
 export Modal from './Modal';
 export Form from './Form';
 export Input from './Input';

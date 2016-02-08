@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportUI } from './';
 
 class Menu extends Component {
   render() {
@@ -11,4 +11,4 @@ class Menu extends Component {
   }
 }
 
-export default exportComponent(Menu, 'menu');
+export default exportUI(Menu, 'menu');

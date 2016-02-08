@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportUI } from './';
 
 class Form extends Component {
   static propTypes = {
@@ -35,4 +35,4 @@ class Form extends Component {
   }
 }
 
-export default exportComponent(Form, 'form');
+export default exportUI(Form, 'form');

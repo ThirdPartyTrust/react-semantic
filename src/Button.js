@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportUI } from './';
 
 class Button extends Component {
   static propTypes = {
     uiStyle: PropTypes.string,
-    className: PropTypes.string,
     type: PropTypes.string,
     disabled: PropTypes.bool
   };
@@ -14,16 +13,11 @@ class Button extends Component {
   };
   render() {
     return (
-      <button
-        {...this.props}
-        className={this.props.className}
-        type={this.props.type}
-        disabled={this.props.disabled}
-      >
+      <button {...this.props}>
         {this.props.children}
       </button>
     );
   }
 }
 
-export default exportComponent(Button, 'button');
+export default exportUI(Button, 'button');

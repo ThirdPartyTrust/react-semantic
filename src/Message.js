@@ -1,18 +1,17 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent } from './';
+import { exportUI } from './';
 
 class Message extends Component {
   static defaultProps = {
-    uiStyle: PropTypes.string,
-    className: PropTypes.string
+    uiStyle: PropTypes.string
   };
   render() {
     return(
-      <div className={this.props.className}>
+      <div {...this.props}>
         {this.props.children}
       </div>
     );
   }
 }
 
-export default exportComponent(Message, 'message');
+export default exportUI(Message, 'message');

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Header, exportComponent } from './';
+import { Header, exportUI } from './';
 import classNames from 'classnames';
 
 class Popup extends Component {
@@ -20,4 +20,4 @@ class Popup extends Component {
   };
 };
 
-export default exportComponent(Popup, 'popup');
+export default exportUI(Popup, 'popup');

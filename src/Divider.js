@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { exportUI } from './';
 
-class Content extends Component {
+class Divider extends Component {
   static propTypes = {
     uiStyle: PropTypes.string
   };
@@ -14,4 +14,4 @@ class Content extends Component {
   }
 }
 
-export default exportUI(Content, 'content');
+export default exportUI(Divider, 'divider');

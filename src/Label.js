@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import exportComponent from './UIComponent';
+import { exportUI } from './';
 
 class Label extends Component {
   render() {
@@ -11,4 +11,4 @@ class Label extends Component {
   }
 }
 
-export default exportComponent(Label, 'label');
+export default exportUI(Label, 'label');

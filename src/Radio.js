@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { exportComponent, Checkbox } from './';
+import { Checkbox } from './';
 
 export default class Radio extends Component {
   static propTypes = {

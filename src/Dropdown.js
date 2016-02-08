@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { exportComponent, Menu, Label } from './';
+import { exportUI, Menu, Label } from './';
 import classNames from 'classnames';
 
 class Dropdown extends Component {
@@ -23,7 +23,8 @@ class Dropdown extends Component {
     require: false,
     requireMessage: 'This field is required',
     disabled: false,
-    select: false
+    select: false,
+    tabIndex: 0
   };
   constructor(props) {
     super(props);
@@ -58,7 +59,7 @@ class Dropdown extends Component {
         <div className={this.buildFieldClassName()}>
           {this.renderFieldLabel()}
           <div
-            tabIndex="0"
+            {...this.props}
             className={this.buildDropdownClassName()}
             onClick={this.handleClick.bind(this)}
             ref={ref => this._dropdown = ref}
@@ -237,4 +238,4 @@ class Dropdown extends Component {
   }
 }
 
-export default exportComponent(Dropdown, 'dropdown');
+export default exportUI(Dropdown, 'dropdown');
