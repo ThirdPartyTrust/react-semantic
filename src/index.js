@@ -23,3 +23,4 @@ export Header from './Header';
 export Content from './Content';
 export Actions from './Actions';
 export Segment from './Segment';
+export Table from './Table';
