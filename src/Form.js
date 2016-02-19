@@ -21,6 +21,7 @@ class Form extends Component {
   render() {
     return (
       <form
+        {...this.props}
         className={this.props.className}
         onSubmit={this.handleSubmit.bind(this)}
       >

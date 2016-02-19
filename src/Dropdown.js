@@ -47,11 +47,11 @@ class Dropdown extends Component {
     window.removeEventListener('click', this.handleOutsideClick.bind(this), true);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.children && this.props.defaultValue) {
-      this.setState(Object.assign({}, this.state, {
-        valueContent: this.renderDefaultValue(this.props.defaultValue)
-      }));
-    }
+    // if (nextProps.children && this.props.defaultValue) {
+    //   this.setState(Object.assign({}, this.state, {
+    //     valueContent: this.renderDefaultValue(this.props.defaultValue)
+    //   }));
+    // }
   }
   render() {
     return (
@@ -66,7 +66,7 @@ class Dropdown extends Component {
           >
             <i className="dropdown icon" onClick={this.state.open ? this.closeMenu.bind(this) : null}></i>
             <div className={this.props.select && !this.state.valueContent ? 'default text' : 'text'}>
-              {this.state.valueContent ? this.state.valueContent : this.props.placeholder}
+              {this.state.valueContent}
             </div>
             <Menu
               transition={this.state.transition}
@@ -127,7 +127,7 @@ class Dropdown extends Component {
       return this.renderChild(child);
     }.bind(this));
   }
-  renderChild(child, bindChange = true, value) {
+  renderChild(child, bindChange = true, value = false) {
     let val = value ? value : this.state.value;
     return (
       <div
@@ -195,7 +195,7 @@ class Dropdown extends Component {
       message: this.state.message,
       valid: true,
       value: target.props.value,
-      valueContent: this.renderChild(target, false),
+      valueContent: this.renderChild(target, false, target.props.value),
       open: false,
       transition: this.state.transition
     }, function() {

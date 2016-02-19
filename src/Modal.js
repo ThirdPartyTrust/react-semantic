@@ -7,14 +7,16 @@ export default class Modal extends Component {
     closeOnEsc: PropTypes.bool,
     header: PropTypes.string,
     onClose: PropTypes.func,
-    bodyClass: PropTypes.string
+    bodyClass: PropTypes.string,
+    closeIcon: PropTypes.bool
   };
   static defaultProps = {
     show: false,
     closeOnEsc: true,
     header: null,
     onClose: () => {},
-    bodyClass: 'modals'
+    bodyClass: 'modals',
+    closeIcon: true
   };
   constructor(props) {
     super(props);
@@ -87,7 +89,7 @@ export default class Modal extends Component {
             style={{top: '20%'}}
             ref={(ref) => this._modal = ref}
           >
-            <i className='close icon' onClick={this.close.bind(this)}></i>
+            {this.props.closeIcon ? <i className='close icon' onClick={this.close.bind(this)}/> : null }
             {this.setHeader()}
             {this.props.children}
           </div>

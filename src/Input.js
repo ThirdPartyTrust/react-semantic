@@ -13,16 +13,25 @@ class Input extends Component {
     require: PropTypes.bool,
     requireMessage: PropTypes.string,
     label: PropTypes.any,
-    value: PropTypes.string || PropTypes.number,
-    placeholder: PropTypes.string || PropTypes.number,
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    placeholder: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     disabled: PropTypes.bool,
     readOnly: PropTypes.bool,
-    maxLength: PropTypes.string || PropTypes.number,
-    rows: PropTypes.string || PropTypes.number,
-    cols: PropTypes.string || PropTypes.number,
-    defaultValue: PropTypes.string || PropTypes.number
+    maxLength: PropTypes.number,
+    rows: PropTypes.number,
+    cols: PropTypes.number,
+    defaultValue: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ])
   };
   static defaultProps = {
     type: 'text',
@@ -173,6 +182,9 @@ class Input extends Component {
     }
   }
   validatePattern(value) {
+    if (!value) {
+      return true;
+    }
     if (value.search(this.props.validate) < 0) {
       this.setState({
         value: this.state.value,
