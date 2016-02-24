@@ -13,14 +13,8 @@ class Input extends Component {
     require: PropTypes.bool,
     requireMessage: PropTypes.string,
     label: PropTypes.any,
-    value: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
-    placeholder: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
+    value: PropTypes.any,
+    placeholder: PropTypes.any,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     disabled: PropTypes.bool,
@@ -28,10 +22,7 @@ class Input extends Component {
     maxLength: PropTypes.number,
     rows: PropTypes.number,
     cols: PropTypes.number,
-    defaultValue: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ])
+    defaultValue: PropTypes.any
   };
   static defaultProps = {
     type: 'text',

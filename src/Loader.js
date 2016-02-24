@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { exportUI } from './';
 
-class Row extends Component {
+class Loader extends Component {
   static propTypes = {
     uiStyle: PropTypes.string
   };
@@ -14,4 +14,4 @@ class Row extends Component {
   }
 }
 
-export default exportUI(Row, 'row');
+export default exportUI(Loader, 'loader');

@@ -24,3 +24,7 @@ export Content from './Content';
 export Actions from './Actions';
 export Segment from './Segment';
 export Table from './Table';
+export Loader from './Loader';
+export Dimmer from './Dimmer';
+export Container from './Container';
+export Divider from './Divider';
