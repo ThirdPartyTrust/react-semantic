@@ -28,3 +28,5 @@ export Loader from './Loader';
 export Dimmer from './Dimmer';
 export Container from './Container';
 export Divider from './Divider';
+export Sidebar from './Sidebar';
+export Pusher from './Pusher';

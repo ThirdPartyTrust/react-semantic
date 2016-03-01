@@ -22,7 +22,8 @@ class Input extends Component {
     maxLength: PropTypes.number,
     rows: PropTypes.number,
     cols: PropTypes.number,
-    defaultValue: PropTypes.any
+    defaultValue: PropTypes.any,
+    valid: PropTypes.bool
   };
   static defaultProps = {
     type: 'text',
@@ -151,7 +152,11 @@ class Input extends Component {
       && this.props.validate
       && valid
     ) {
-      valid = this.validatePattern(this.state.value);
+      if (this.props.validate instanceof RegExp) {
+        valid = this.validatePattern(this.state.value);
+      } else if (this.props.validate instanceof Function) {
+        valid = this.validateFunction(this.state.value);
+      }
     }
     return valid;
   }
@@ -192,6 +197,21 @@ class Input extends Component {
       return true;
     }
   }
+  validateFunction(value) {
+    if (!value) {
+      return true;
+    }
+    let isValid = this.props.validate(value);
+    if (typeof isValid !== 'boolean') {
+      return true;
+    }
+    this.setState({
+      value: this.state.value,
+      message: !isValid ? this.props.validateMessage : this.state.message,
+      valid: isValid
+    });
+    return isValid;
+  } 
   getName() {
     return this.props.name;
   }
