@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { exportUI } from './';
+import { UIComponent } from './decorators';
 
-class Actions extends Component {
+@UIComponent('actions')
+
+export default class Actions extends Component {
   static propTypes = {
     uiStyle: PropTypes.string
   };
@@ -13,5 +15,3 @@ class Actions extends Component {
     );
   }
 }
-
-export default exportUI(Actions, 'actions');

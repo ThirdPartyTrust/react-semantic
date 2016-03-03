@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { exportUI } from './';
+import { UIComponent } from './decorators';
 
-class Button extends Component {
+@UIComponent('button')
+
+export default class Button extends Component {
   static propTypes = {
     uiStyle: PropTypes.string,
     type: PropTypes.string,
@@ -19,5 +21,3 @@ class Button extends Component {
     );
   }
 }
-
-export default exportUI(Button, 'button');

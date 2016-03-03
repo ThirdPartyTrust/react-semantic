@@ -1,4 +1,7 @@
-export exportUI from './UIComponent';
+// decorators
+export exportUI from './decorators/exportUI';
+export SemanticExtend from './decorators/SemanticExtend';
+// components
 export Modal from './Modal';
 export Form from './Form';
 export Input from './Input';
