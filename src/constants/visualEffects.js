@@ -31,6 +31,14 @@ const visualEffects = {
     'pulse',
     'tada',
     'bounce'
+  ],
+  sidebar: [
+    'overlay',
+    'push',
+    'scale down',
+    'uncover',
+    'slide along',
+    'slide out'
   ]
 };
 

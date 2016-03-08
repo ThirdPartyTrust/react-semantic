@@ -1,5 +1,5 @@
 // decorators
-export SemanticExtend from './decorators/SemanticExtend';
+export semanticExtend from './decorators/semanticExtend';
 // components
 export Modal from './components/Modal';
 export Form from './components/Form';
@@ -30,5 +30,6 @@ export Loader from './components/Loader';
 export Dimmer from './components/Dimmer';
 export Container from './components/Container';
 export Divider from './components/Divider';
+export Pushable from './components/Pushable';
 export Sidebar from './components/Sidebar';
 export Pusher from './components/Pusher';

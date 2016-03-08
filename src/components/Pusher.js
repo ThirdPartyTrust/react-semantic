@@ -5,7 +5,8 @@ import { UIComponent } from '../decorators';
 
 export default class Pusher extends Component {
   static propTypes = {
-    uiStyle: PropTypes.string
+    uiStyle: PropTypes.string,
+    dimmed: PropTypes.bool
   }
   render() {
     return (

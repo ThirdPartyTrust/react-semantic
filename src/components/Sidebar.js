@@ -3,7 +3,7 @@ import { UIComponent } from '../decorators';
 
 @UIComponent('sidebar')
 
-class Sidebar extends Component {
+export default class Sidebar extends Component {
   static propTypes = {
     uiStyle: PropTypes.string
   }

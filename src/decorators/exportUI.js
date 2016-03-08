@@ -14,11 +14,13 @@ export default function exportUI(Component, componentName) {
       animation: PropTypes.string,
       animate: PropTypes.bool,
       onAnimationStart: PropTypes.func,
-      onAnimationEnd: PropTypes.func
+      onAnimationEnd: PropTypes.func,
+      uiComponent: PropTypes.string
     };
     static defaultProps = {
       visible: true,
-      animate: false
+      animate: false,
+      uiComponent: componentName
     };
     constructor(props) {
       super(props);
@@ -83,10 +85,10 @@ export default function exportUI(Component, componentName) {
       var iconCount = 0;
       if (Array.isArray(this.props.children)) {
         for (var child in this.props.children) {
-         if (child.props.uiElement === 'label') {
+         if (child.props.uiComponent === 'label') {
             labelCount++;
           }
-          if (child.props.uiElement === 'icon') {
+          if (child.props.uiComponent === 'icon') {
             iconCount++;
           }
         };
@@ -102,20 +104,22 @@ export default function exportUI(Component, componentName) {
         !this.state.animation
         && vfx.transitions.indexOf(this.state.animation) === -1
         && vfx.animations.indexOf(this.state.animation) === -1
+        && vfx.sidebar.indexOf(this.state.animation) === -1
       ) {
         return;
       }
-      let isTransition = vfx.animations.indexOf(this.state.animation) === -1;
+      let isTransition = vfx.animations.indexOf(this.state.animation) === -1 && componentName !== 'sidebar';
       if (this.state.animating) {
         this.setAnimationTimeout(isTransition);
       }
-      return classNames('transition', {
-        visible: this.state.visible || this.state.animating,
-        hidden: !this.state.visible && !this.state.animating && isTransition,
+      return classNames({
+        transition: componentName !== 'sidebar',
+        visible: this.state.visible || (this.state.animating && componentName !== 'sidebar'),
+        hidden: !this.state.visible && !this.state.animating && isTransition && componentName !== 'sidebar',
         animating: this.state.animating,
         in: this.state.visible && this.state.animating && isTransition,
         out: !this.state.visible && this.state.animating && isTransition,
-        [this.state.animation]: this.state.animating
+        [this.state.animation]: componentName === 'sidebar' || this.state.animating
       });
     }
     setAnimationTimeout(isTransition = false) {

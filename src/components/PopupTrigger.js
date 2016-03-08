@@ -9,24 +9,24 @@ export default class PopupTrigger extends Component {
     trigger: PropTypes.string,
     placement: PropTypes.string,
     content: PropTypes.any
-  };
+  }
   static defaultProps = {
     trigger: 'click',
     placement: 'top'
-  };
+  }
   state = {
     contentVisible: false,
     contentStyle: {
       display: 'block',
       visibility: 'hidden'
     }
-  };
+  }
   validTrigger = [
     'click', 'hover', 'focus'
-  ];
+  ]
   validPlacement = [
     'top', 'bottom', 'left', 'right'
-  ];
+  ]
   componentDidMount() {
     if (!this._portal) {
       this._portal = document.createElement('div');
@@ -44,7 +44,7 @@ export default class PopupTrigger extends Component {
     return (
       <div
         {...this.props}
-        style={{display:'inline-block'}}
+        style={{display:'inline-block', ...this.props.style}}
         onClick={this.handleClick.bind(this)}
         onMouseOver={this.handleMouseOver.bind(this)}
         onMouseOut={this.handleMouseOut.bind(this)}
