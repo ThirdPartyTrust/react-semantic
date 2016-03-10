@@ -1,6 +1,6 @@
 {
   "name": "react-semantic",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Semantic-UI components built with React",
   "repository": {
     "type": "git",
@@ -12,7 +12,13 @@
     "build:commonjs": "npm run clean && babel src --out-dir lib"
   },
   "main": "lib/index.js",
+  "peerDependencies": {
+    "react": ">=0.14.0",
+    "react-dom": ">=0.14.0"
+  },
   "devDependencies": {
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
     "rimraf": "^2.4.3",
     "babel": "^5.8.23",
     "babel-core": "^5.8.25",
@@ -29,8 +35,6 @@
     "css-loader": "latest"
   },
   "dependencies": {
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0",
     "classnames": "^2.2.1",
     "document-offset": "^1.0.4"
   }
