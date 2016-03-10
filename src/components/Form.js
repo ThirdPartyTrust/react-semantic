@@ -6,7 +6,6 @@ import { UIComponent } from '../decorators';
 export default class Form extends Component {
   static propTypes = {
     uiStyle: PropTypes.string,
-    className: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
     disabled: PropTypes.bool
   }
@@ -24,7 +23,6 @@ export default class Form extends Component {
     return (
       <form
         {...this.props}
-        className={this.props.className}
         onSubmit={this.handleSubmit.bind(this)}
       >
         <fieldset

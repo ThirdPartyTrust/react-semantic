@@ -73,14 +73,18 @@ export default function exportUI(Component, componentName) {
     }
     buildElementStyle(uiElement) {
       let styleFunctions = {
-        input: this.buildInputStyle
+        input: this.buildInputStyle,
+        sidebar: this.buildSidebarStyle
       };
-      if (!styleFunctions[uiElement] || !this.props.children) {
-        return;
+      if (uiElement in styleFunctions) {
+        return styleFunctions[uiElement].apply(this);
       }
-      return styleFunctions[uiElement].bind(this);
+      return;
     }
     buildInputStyle() {
+      if (!this.props.children) {
+        return;
+      }
       var labelCount = 0;
       var iconCount = 0;
       if (Array.isArray(this.props.children)) {
@@ -98,6 +102,9 @@ export default function exportUI(Component, componentName) {
         labeled: labelCount >= 1,
         icon: iconCount > 0 && labelCount <=1
       });
+    }
+    buildSidebarStyle() {
+      return this.props.direction;
     }
     buildAnimationStyle() {
       if (

@@ -5,7 +5,13 @@ import { UIComponent } from '../decorators';
 
 export default class Sidebar extends Component {
   static propTypes = {
-    uiStyle: PropTypes.string
+    uiStyle: PropTypes.string,
+    direction: PropTypes.string,
+    onOutsideClick: PropTypes.func
+  }
+  static defaultProps = {
+    direction: 'left',
+    onOutsideClick: () => {}
   }
   render() {
     return (
