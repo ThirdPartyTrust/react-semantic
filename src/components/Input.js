@@ -13,8 +13,10 @@ export default class Input extends Component {
     name: PropTypes.string,
     validate: PropTypes.any,
     validateMessage: PropTypes.string,
+    validateOnChange: PropTypes.bool,
     require: PropTypes.bool,
     requireMessage: PropTypes.string,
+    requireOnChange: PropTypes.bool,
     label: PropTypes.any,
     value: PropTypes.any,
     placeholder: PropTypes.any,
@@ -33,6 +35,8 @@ export default class Input extends Component {
     require: false,
     requireMessage: 'This field is required',
     validateMessage: 'This field is invalid',
+    requireOnChange: true,
+    validateOnChange: true,
     diasbled: false,
     readOnly: false
   }
@@ -89,6 +93,7 @@ export default class Input extends Component {
           {...this.props}
           value={this.state.value}
           children={null}
+          onFocus={this.handleOnFocus.bind(this)}
           onBlur={this.handleOnBlur.bind(this)}
           onChange={this.handleOnChange.bind(this)}
           ref={(ref) => this._input = ref}
@@ -100,6 +105,7 @@ export default class Input extends Component {
           {...this.props}
           value={this.state.value}
           children={null}
+          onFocus={this.handleOnFocus.bind(this)}
           onBlur={this.handleOnBlur.bind(this)}
           onChange={this.handleOnChange.bind(this)}
           ref={(ref) => this._input = ref}
@@ -132,6 +138,15 @@ export default class Input extends Component {
     }
     this.validate();
   }
+  handleOnFocus() {
+    if (this.props.validateOnChange) {
+      return;
+    }
+    this.setState({
+      ...this.state,
+      valid: true
+    });
+  }
   handleOnChange(e) {
     if (this.props.onChange instanceof Function) {
       this.props.onChange(this, e);
@@ -139,11 +154,14 @@ export default class Input extends Component {
     this.setState(Object.assign({}, this.state, {
       value: e.target.value
     }), () => {
+      if (!this.props.validateOnChange && this.state.valid) {
+        return;
+      }
       window.clearTimeout(this._changeTimeout);
       this._changeTimeout = window.setTimeout(
         this.validate(), 300
       );
-    }.bind(this));
+    });
   }
   validate() {
     let valid = true;

@@ -32,7 +32,7 @@ export default class Modal extends Component {
         closing: this.state.closing
       }, () => {
         this.setBodyClass(true);
-      }.bind(this));
+      });
     }
   }
   componentWillUnmount() {
@@ -51,7 +51,7 @@ export default class Modal extends Component {
     }, () => {
       this.setBodyClass();
       this.props.onClose();
-    }.bind(this));
+    });
   }
   setClosing() {
     this.setState({
