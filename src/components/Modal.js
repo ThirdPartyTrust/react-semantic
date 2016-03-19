@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Portal from 'react-portal';
 import classNames from 'classnames';
 
 export default class Modal extends Component {
@@ -9,7 +10,7 @@ export default class Modal extends Component {
     onClose: PropTypes.func,
     bodyClass: PropTypes.string,
     closeIcon: PropTypes.bool
-  };
+  }
   static defaultProps = {
     show: false,
     closeOnEsc: true,
@@ -17,24 +18,20 @@ export default class Modal extends Component {
     onClose: () => {},
     bodyClass: 'modals',
     closeIcon: true
-  };
-  constructor(props) {
-    super(props);
-    this.state = {
-      show: this.props.show,
-      closing: false
-    };
-    this._modal = null;
   }
-  componentWillReceiveProps(newProps) {
-    if (!newProps.show && this.state.show) {
+  state = {
+    show: this.props.show,
+    closing: false
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.show && this.state.show) {
       this.close();
     } else {
       this.setState({
-        show: newProps.show,
+        show: nextProps.show,
         closing: this.state.closing
       }, () => {
-        this.setBodyClass();
+        this.setBodyClass(true);
       }.bind(this));
     }
   }
@@ -62,13 +59,12 @@ export default class Modal extends Component {
       closing: true
     });
   }
-  setBodyClass(show = null) {
-    let showState = show === null ? this.state.show : show;
+  setBodyClass(show = true) {
     let bodyClassNames = document.body.className.replace(
       this.props.bodyClass, ''
     );
     document.body.className = classNames(bodyClassNames, {
-      [this.props.bodyClass]: showState
+      [this.props.bodyClass]: show
     });
   }
   setHeader() {
@@ -82,19 +78,20 @@ export default class Modal extends Component {
   }
   render() {
     return (
-      <div style={{display: !this.state.show ? 'none' : 'block'}}>
-        <div className={'ui dimmer modals visible active page transition fade ' + (!this.state.closing ? 'in' : 'out')}>
-          <div
-            className={'ui standard modal transition visible active scale ' + (!this.state.closing ? 'in' : 'out')}
-            style={{top: '20%'}}
-            ref={(ref) => this._modal = ref}
-          >
-            {this.props.closeIcon ? <i className='close icon' onClick={this.close.bind(this)}/> : null }
-            {this.setHeader()}
-            {this.props.children}
+      <Portal isOpened={this.state.show}>
+        <div style={{display: !this.state.show ? 'none' : 'block'}}>
+          <div className={'ui dimmer modals visible active page transition fade ' + (!this.state.closing ? 'in' : 'out')}>
+            <div
+              className={'ui standard modal transition visible active scale ' + (!this.state.closing ? 'in' : 'out')}
+              style={{top: '20%'}}
+            >
+              {this.props.closeIcon ? <i className='close icon' onClick={this.close.bind(this)}/> : null }
+              {this.setHeader()}
+              {this.props.children}
+            </div>
           </div>
         </div>
-      </div>
+      </Portal>
     );
   }
 }

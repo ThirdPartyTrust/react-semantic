@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.1",
-    "document-offset": "^1.0.4"
+    "document-offset": "^1.0.4",
+    "react-portal": "^2.1.0"
   }
 }

@@ -7,6 +7,7 @@ export Input from './components/Input';
 export Icon  from './components/Icon';
 export Label from './components/Label';
 export Button from './components/Button';
+export ButtonGroup from './components/ButtonGroup';
 export Dropdown from './components/Dropdown';
 export Select from './components/Select';
 export Grid from './components/Grid';
