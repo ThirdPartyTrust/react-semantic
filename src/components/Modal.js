@@ -20,23 +20,29 @@ export default class Modal extends Component {
     closeIcon: true
   }
   state = {
-    show: this.props.show,
+    show: false,
     closing: false
   }
+  componentWillMount() {
+    this.setStateByProps(this.props);
+  }
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.show && this.state.show) {
-      this.close();
-    } else {
-      this.setState({
-        show: nextProps.show,
-        closing: this.state.closing
-      }, () => {
-        this.setBodyClass(true);
-      });
-    }
+    this.setStateByProps(nextProps);
   }
   componentWillUnmount() {
     this.setBodyClass(false);
+  }
+  setStateByProps(props) {
+    if (!props.show && this.state.show) {
+      this.close();
+    } else {
+      this.setState({
+        show: props.show,
+        closing: this.state.closing
+      }, () => {
+        this.setBodyClass(props.show);
+      });
+    }
   }
   close() {
     this.setClosing();
@@ -49,7 +55,7 @@ export default class Modal extends Component {
       show: false,
       closing: false
     }, () => {
-      this.setBodyClass();
+      this.setBodyClass(false);
       this.props.onClose();
     });
   }
