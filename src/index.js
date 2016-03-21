@@ -5,6 +5,7 @@ export Modal from './components/Modal';
 export Form from './components/Form';
 export Input from './components/Input';
 export Icon  from './components/Icon';
+export Flag from './components/Flag';
 export Label from './components/Label';
 export Button from './components/Button';
 export ButtonGroup from './components/ButtonGroup';
