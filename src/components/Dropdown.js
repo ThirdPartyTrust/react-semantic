@@ -19,6 +19,7 @@ export default class Dropdown extends Component {
     onBlur: PropTypes.func,
     defaultValue: PropTypes.any,
     disabled: PropTypes.bool,
+    readOnly: PropTypes.bool,
     placeholder: PropTypes.any,
     select: PropTypes.bool
   }
@@ -26,6 +27,7 @@ export default class Dropdown extends Component {
     require: false,
     requireMessage: 'This field is required',
     disabled: false,
+    readOnly: false,
     select: false,
     tabIndex: 0
   }
@@ -172,6 +174,9 @@ export default class Dropdown extends Component {
   }
   handleClick(e) {
     if (this.state.open) {
+      return;
+    }
+    if (this.props.disabled || this.props.readOnly) {
       return;
     }
     let renderHeight = this.state.renderHeight;

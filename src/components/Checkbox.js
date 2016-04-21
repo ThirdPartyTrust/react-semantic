@@ -16,11 +16,13 @@ export default class Checkbox extends Component {
     onClick: PropTypes.func,
     onChange: PropTypes.func,
     disabled: PropTypes.bool,
+    readOnly: PropTypes.bool,
     checked: PropTypes.bool
   }
   static defaultProps = {
     type: 'checkbox',
     disabled: false,
+    readOnly: false,
     require: false,
     requireMessage: 'This field is required',
     checked: false,
@@ -50,7 +52,7 @@ export default class Checkbox extends Component {
               className="hidden"
               type={this.props.type}
               name={this.props.name}
-              disabled={this.props.disabled}
+              disabled={this.props.disabled || this.props.readOnly}
               checked={this.state.checked}
               value={this.props.value}
               ref={(ref) => this._checkbox = ref}
@@ -82,6 +84,9 @@ export default class Checkbox extends Component {
     }
   }
   handleOnClick(e) {
+    if (this.props.disabled || this.props.readOnly) {
+      return;
+    }
     if (this.props.onClick instanceof Function) {
       let continueDefault = this.props.onClick(this, e);
       if (continueDefault === false) {
