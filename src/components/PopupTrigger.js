@@ -1,24 +1,43 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { Popup } from '../';
 import classNames from 'classnames';
 import offset from 'document-offset';
+import { UIComponent } from '../decorators';
+
+@UIComponent()
 
 export default class PopupTrigger extends Component {
   static propTypes = {
     trigger: PropTypes.string,
     placement: PropTypes.string,
-    content: PropTypes.any
+    content: PropTypes.any,
+    contentHoverable: PropTypes.bool,
+    delay: PropTypes.shape({
+      show: PropTypes.number,
+      hide: PropTypes.number
+    }),
+    renderAs: PropTypes.string
   }
   static defaultProps = {
     trigger: 'click',
-    placement: 'top'
+    placement: 'top',
+    contentHoverable: false,
+    delay: {
+      show: 0,
+      hide: 0
+    },
+    renderAs: 'div'
   }
   state = {
     contentVisible: false,
+    mouseOverContent: false,
     contentStyle: {
       display: 'block',
       visibility: 'hidden'
+    },
+    popupStyle: {
+      height: null,
+      width: null
     }
   }
   validTrigger = [
@@ -32,26 +51,31 @@ export default class PopupTrigger extends Component {
       this._portal = document.createElement('div');
       document.body.appendChild(this._portal);
     }
-    this.componentDidUpdate();
+    this.DOMRender();
   }
   componentDidUpdate() {
-    ReactDOM.render(this.renderPopupContent(), this._portal);
+    this.DOMRender();
+  }
+  DOMRender() {
+    ReactDOM.render(
+      this.renderPopupContent(),
+      this._portal
+    );
   }
   componentWillUnmount() {
     document.body.removeChild(this._portal);
   }
   render() {
+    let Trigger = this.props.renderAs;
     return (
-      <div
+      <Trigger
         {...this.props}
-        style={{display:'inline-block', ...this.props.style}}
+        content={null}
         onClick={this.handleClick.bind(this)}
-        onMouseOver={this.handleMouseOver.bind(this)}
-        onMouseOut={this.handleMouseOut.bind(this)}
+        onMouseEnter={this.handleMouseEnter.bind(this)}
+        onMouseLeave={this.handleMouseLeave.bind(this)}
         ref={ref => this._popupTrigger = ref}
-      >
-        {this.props.children}
-      </div>
+      />
     );
   }
   renderPopupContent() {
@@ -65,7 +89,9 @@ export default class PopupTrigger extends Component {
       visible: this.state.contentVisible,
       uiStyle: this.buildPlacementClass(content.props.uiStyle),
       style: Object.assign({position: 'absolute'}, this.state.contentStyle),
-      ref: ref => this._popup = ReactDOM.findDOMNode(ref)
+      ref: ref => this._popup = ReactDOM.findDOMNode(ref),
+      onMouseEnter: this.handleContentMouseEnter.bind(this, content),
+      onMouseLeave: this.handleContentMouseLeave.bind(this, content)
     });
   }
   buildPlacementClass(uiStyle) {
@@ -80,21 +106,35 @@ export default class PopupTrigger extends Component {
   }
   buildContentStyle() {
     const { placement } = this.props;
-    const { contentStyle } = this.state;
-    if (contentStyle.top && contentStyle.left) {
-      return contentStyle;
-    }
+    const { contentStyle, popupStyle } = this.state;
     let triggerHeight = this._popupTrigger.clientHeight;
     let triggerWidth = this._popupTrigger.clientWidth;
-    let popupStyle = getComputedStyle(this._popup);
-    let popupHeight = this._popup.offsetHeight + parseInt(popupStyle.marginTop) + parseInt(popupStyle.marginBottom);
-    let popupWidth = this._popup.offsetWidth + parseInt(popupStyle.marginLeft) + parseInt(popupStyle.marginRight);
+    let popupHeight = popupStyle.height;
+    let popupWidth = popupStyle.width;
+    if (!popupHeight && !popupWidth) {
+      let popupComputedStyle = getComputedStyle(this._popup);
+      popupHeight =
+        this._popup.offsetHeight +
+        parseInt(popupComputedStyle.marginTop) +
+        parseInt(popupComputedStyle.marginBottom);
+      popupWidth =
+        this._popup.offsetWidth +
+        parseInt(popupComputedStyle.marginLeft) +
+        parseInt(popupComputedStyle.marginRight);
+      this.setState({
+        ...this.state,
+        popupStyle: {
+          height: popupHeight,
+          width: popupWidth
+        }
+      });
+    }
     let triggerOffset = offset(this._popupTrigger);
     let style = { top: 0, left: 0 };
     if (placement === 'bottom') {
       style = {
-        top: triggerOffset.top + popupHeight,
-        left: triggerOffset.left - (popupWidth/2) + (triggerWidth/2)
+        top: triggerOffset.top + triggerHeight,
+        left: triggerOffset.left - 250/2 + triggerWidth/2
       }
     }
     if (placement === 'right') {
@@ -130,30 +170,70 @@ export default class PopupTrigger extends Component {
       onClick();
     }
   }
-  handleMouseOver() {
-    const { trigger, onMouseOver } = this.props;
+  handleMouseEnter() {
+    const { trigger, onMouseEnter } = this.props;
     if (trigger !== 'hover') {
       return;
     }
-    this.setState({
-      contentVisible: true,
-      contentStyle: this.buildContentStyle()
-    });
-    if (onMouseOver instanceof Function) {
-      onMouseOver();
+    let timeout = window.setTimeout(
+      this.setState({
+        contentVisible: true,
+        contentStyle: this.buildContentStyle()
+      }, () => {
+        window.clearTimeout(timeout);
+      }),
+      this.props.delay.show
+    );
+    if (onMouseEnter instanceof Function) {
+      onMouseEnter();
     }
   }
-  handleMouseOut() {
-    const { trigger, onMouseOut } = this.props;
+  handleMouseLeave() {
+    const { trigger, onMouseLeave, contentHoverable } = this.props;
+    const { hide } = this.props.delay;
     if (trigger !== 'hover') {
       return;
     }
-    this.setState({
-      contentVisible: false,
-      contentStyle: this.buildContentStyle()
-    });
-    if (onMouseOut instanceof Function) {
-      onMouseOut();
+    let timeout = window.setTimeout(
+      () => {
+        if (this.state.mouseOverContent) {
+          return;
+        }
+        this.setState({
+          ...this.state,
+          contentVisible: false
+        }, () => {
+          window.clearTimeout(timeout);
+        })
+      },
+      contentHoverable && hide <= 0 ? 300 : hide
+    );
+    if (onMouseLeave instanceof Function) {
+      onMouseLeave();
     }
+  }
+  handleContentMouseEnter(content) {
+    const { onMouseEnter } = content.props;
+    this.setState({
+      ...this.state,
+      mouseOverContent: true
+    });
+    if (!onMouseEnter) {
+      return;
+    }
+    onMouseEnter();
+  }
+  handleContentMouseLeave(content) {
+    const { onMouseLeave } = content.props;
+    this.setState({
+      ...this.state,
+      mouseOverContent: false
+    }, () => {
+      this.handleMouseLeave();
+    });
+    if (!onMouseLeave) {
+      return;
+    }
+    onMouseLeave();
   }
 }
