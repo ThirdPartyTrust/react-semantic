@@ -26,7 +26,7 @@ export default class PopupTrigger extends Component {
       show: 0,
       hide: 0
     },
-    renderAs: 'div'
+    renderAs: 'span'
   }
   state = {
     contentVisible: false,
@@ -177,6 +177,7 @@ export default class PopupTrigger extends Component {
     }
     let timeout = window.setTimeout(
       this.setState({
+        ...this.state,
         contentVisible: true,
         contentStyle: this.buildContentStyle()
       }, () => {
