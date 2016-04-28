@@ -60,15 +60,13 @@ export default class Input extends Component {
   }
   render() {
     return (
-      <div className="ui form">
-        <div className={this.buildFieldClassName()}>
-          {this.renderFieldLabel()}
-          <div className={this.props.className}>
-            {this.renderInputByType()}
-            {this.props.children}
-          </div>
-          {this.renderValidationLabel()}
+      <div className={this.buildFieldClassName()}>
+        {this.renderFieldLabel()}
+        <div className={this.props.className}>
+          {this.renderInputByType()}
+          {this.props.children}
         </div>
+        {this.renderValidationLabel()}
       </div>
     );
   }

@@ -60,28 +60,26 @@ export default class Dropdown extends Component {
   }
   render() {
     return (
-      <div className="ui form">
-        <div className={this.buildFieldClassName()}>
-          {this.renderFieldLabel()}
-          <div
-            {...this.props}
-            className={this.buildDropdownClassName()}
-            onClick={this.handleClick.bind(this)}
-            ref={ref => this._dropdown = ref}
+      <div className={this.buildFieldClassName()}>
+        {this.renderFieldLabel()}
+        <div
+          {...this.props}
+          className={this.buildDropdownClassName()}
+          onClick={this.handleClick.bind(this)}
+          ref={ref => this._dropdown = ref}
+        >
+          <i className="dropdown icon" onClick={this.state.open ? this.closeMenu.bind(this) : null}></i>
+          {this.state.valueContent}
+          <Menu
+            transition={this.state.transition}
+            visible={this.state.open}
+            style={!this.state.renderHeight ? {display:'block', visibility: 'hidden'} : null}
+            ref={ref => this._menu = ref}
           >
-            <i className="dropdown icon" onClick={this.state.open ? this.closeMenu.bind(this) : null}></i>
-            {this.state.valueContent}
-            <Menu
-              transition={this.state.transition}
-              visible={this.state.open}
-              style={!this.state.renderHeight ? {display:'block', visibility: 'hidden'} : null}
-              ref={ref => this._menu = ref}
-            >
-              {this.renderItems()}
-            </Menu>
-          </div>
-          {this.renderValidationLabel()}
+            {this.renderItems()}
+          </Menu>
         </div>
+        {this.renderValidationLabel()}
       </div>
     );
   }
