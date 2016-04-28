@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Dimmer, Icon } from '../';
 import Portal from 'react-portal';
 import classNames from 'classnames';
 
@@ -23,14 +24,30 @@ export default class Modal extends Component {
     show: false,
     closing: false
   }
+  styles = {
+    '.ui.modal': {
+      top: '20%',
+      position: 'static',
+      margin: '0px auto',
+      marginTop: '4em',
+      marginBottom: '4em'
+    },
+    '.ui.dimmer.modals': {
+      overflow: 'auto'
+    }
+  }
   componentWillMount() {
     this.setStateByProps(this.props);
+    if (this.props.show) {
+      document.body.style.overflow = 'hidden';
+    }
   }
   componentWillReceiveProps(nextProps) {
     this.setStateByProps(nextProps);
   }
   componentWillUnmount() {
     this.setBodyClass(false);
+    document.body.style.overflow = null;
   }
   setStateByProps(props) {
     if (!props.show && this.state.show) {
@@ -82,20 +99,44 @@ export default class Modal extends Component {
       );
     }
   }
+  renderCloseIcon() {
+    if (!this.props.closeIcon) {
+      return;
+    }
+    return (
+      <Icon
+        uiStyle="close"
+        onClick={this.close.bind(this)}
+      />
+    );
+  }
   render() {
     return (
       <Portal isOpened={this.state.show}>
         <div style={{display: !this.state.show ? 'none' : 'block'}}>
-          <div className={'ui dimmer modals visible active page transition fade ' + (!this.state.closing ? 'in' : 'out')}>
+          <Dimmer
+            uiStyle={
+              classNames('modals visible active page transition fade', {
+                'in': !this.state.closing,
+                'out': this.state.closing
+              })
+            }
+            style={this.styles['.ui.dimmer.modals']}
+          >
             <div
-              className={'ui standard modal transition visible active scale ' + (!this.state.closing ? 'in' : 'out')}
-              style={{top: '20%'}}
+              className={
+                classNames('ui standard modal transition visible active scale', {
+                  'in': !this.state.closing,
+                  'out': this.state.closing
+                })
+              }
+              style={this.styles['.ui.modal']}
             >
-              {this.props.closeIcon ? <i className='close icon' onClick={this.close.bind(this)}/> : null }
+              {this.renderCloseIcon()}
               {this.setHeader()}
               {this.props.children}
             </div>
-          </div>
+          </Dimmer>
         </div>
       </Portal>
     );
