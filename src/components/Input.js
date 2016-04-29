@@ -146,12 +146,12 @@ export default class Input extends Component {
     });
   }
   handleOnChange(e) {
-    if (this.props.onChange instanceof Function) {
-      this.props.onChange(this, e);
-    }
     this.setState(Object.assign({}, this.state, {
       value: e.target.value
     }), () => {
+      if (this.props.onChange instanceof Function) {
+        this.props.onChange(this, e);
+      }
       if (!this.props.validateOnChange && this.state.valid) {
         return;
       }
