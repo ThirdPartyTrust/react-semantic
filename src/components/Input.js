@@ -37,7 +37,7 @@ export default class Input extends Component {
     validateMessage: 'This field is invalid',
     requireOnChange: true,
     validateOnChange: true,
-    diasbled: false,
+    disabled: false,
     readOnly: false
   }
   state = {

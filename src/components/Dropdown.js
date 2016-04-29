@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import { Menu, Label } from '../';
+import { Menu, Label, Icon } from '../';
 import { UIComponent } from '../decorators';
 
 @UIComponent('dropdown')
@@ -68,7 +68,9 @@ export default class Dropdown extends Component {
           onClick={this.handleClick.bind(this)}
           ref={ref => this._dropdown = ref}
         >
-          <i className="dropdown icon" onClick={this.state.open ? this.closeMenu.bind(this) : null}></i>
+          <Icon uiStyle="dropdown" onClick={
+            this.state.open ? this.closeMenu.bind(this) : null
+          }/>
           {this.state.valueContent}
           <Menu
             transition={this.state.transition}
@@ -99,9 +101,10 @@ export default class Dropdown extends Component {
   }
   buildDropdownClassName() {
     return classNames(this.props.className, {
+      disabled: this.props.disabled,
       active: this.state.open,
       visible: this.state.open,
-      upward: this.state.transition === 'slide up'
+      upward: this.state.transition === 'slide up',
     });
   }
   renderValidationLabel() {
@@ -174,7 +177,10 @@ export default class Dropdown extends Component {
     if (this.state.open) {
       return;
     }
-    if (this.props.disabled || this.props.readOnly) {
+    if (
+      this.props.disabled === true
+      || this.props.readOnly === true
+    ) {
       return;
     }
     let renderHeight = this.state.renderHeight;
@@ -252,6 +258,9 @@ export default class Dropdown extends Component {
     return this.props.name;
   }
   getValue() {
+    if (this.props.disabled === true) {
+      return null;
+    }
     return this.state.value;
   }
 }
