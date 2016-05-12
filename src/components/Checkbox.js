@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { UIComponent } from '../decorators';
+import classNames from 'classnames';
 
 @UIComponent('checkbox')
 
@@ -42,32 +43,40 @@ export default class Checkbox extends Component {
   }
   render() {
     return (
-      <div className="ui form">
-        <div className={this.buildFieldClassName()}>
-          <div
-            className={this.state.checked ? this.props.className : `${this.props.className} checked`}
-            onClick={this.handleOnClick.bind(this)}
-          >
-            <input
-              className="hidden"
-              type={this.props.type}
-              name={this.props.name}
-              disabled={this.props.disabled || this.props.readOnly}
-              checked={this.state.checked}
-              value={this.props.value}
-              ref={(ref) => this._checkbox = ref}
-            />
-            {this.renderFieldLabel()}
-            {this.renderValidationLabel()}
-          </div>
+      <div
+        style={this.props.style}
+        className={this.buildFieldClassName()}
+      >
+        <div
+          className={this.buildInputClassName()}
+          onClick={this.handleOnClick.bind(this)}
+        >
+          <input
+            className="hidden"
+            type={this.props.type}
+            name={this.props.name}
+            disabled={this.props.disabled || this.props.readOnly}
+            checked={this.state.checked}
+            value={this.props.value}
+            ref={(ref) => this._checkbox = ref}
+          />
+          {this.renderFieldLabel()}
+          {this.renderValidationLabel()}
         </div>
       </div>
     );
   }
   buildFieldClassName() {
-    let require = this.props.require ? 'required' : '';
-    let error = !this.state.valid ? 'error' : '';
-    return `${require} field ${error}`;
+    return classNames({
+      required: this.props.require,
+      field: true,
+      error: !this.state.valid
+    });
+  }
+  buildInputClassName() {
+    return classNames(this.props.className, {
+      checked: this.state.checked
+    });
   }
   renderFieldLabel() {
     return (
