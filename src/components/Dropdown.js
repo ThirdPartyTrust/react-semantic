@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
+import keycode from 'keycode';
 import { Menu, Label, Icon } from '../';
 import { UIComponent } from '../decorators';
 
@@ -40,8 +41,9 @@ export default class Dropdown extends Component {
       valueContent: this.renderDefaultValue(this.props.defaultValue),
       open: false,
       transition: 'slide down',
-      renderHeight: null
-    }
+      renderHeight: null,
+      focusedOptionKey: -1
+    };
     this._dropdown = null;
     this._menu = null;
   }
@@ -64,8 +66,12 @@ export default class Dropdown extends Component {
         {this.renderFieldLabel()}
         <div
           {...this.props}
+          tabIndex={this.props.select ? 0 : -1}
           className={this.buildDropdownClassName()}
           onClick={this.handleClick.bind(this)}
+          onFocus={this.handleClick.bind(this)}
+          onBlur={this.handleBlur.bind(this)}f
+          onKeyDown={this.handleKeyDown.bind(this)}
           ref={ref => this._dropdown = ref}
         >
           <Icon uiStyle="dropdown" onClick={
@@ -75,7 +81,7 @@ export default class Dropdown extends Component {
           <Menu
             transition={this.state.transition}
             visible={this.state.open}
-            style={!this.state.renderHeight ? {display:'block', visibility: 'hidden'} : null}
+            style={!this.state.renderHeight ? {display: 'block', visibility: 'hidden'} : null}
             ref={ref => this._menu = ref}
           >
             {this.renderItems()}
@@ -104,7 +110,7 @@ export default class Dropdown extends Component {
       disabled: this.props.disabled,
       active: this.state.open,
       visible: this.state.open,
-      upward: this.state.transition === 'slide up',
+      upward: this.state.transition === 'slide up'
     });
   }
   renderValidationLabel() {
@@ -129,14 +135,14 @@ export default class Dropdown extends Component {
     }
     return this.props.children.map(item => {
       return this.renderItem(item);
-    }.bind(this));
+    });
   }
   renderItem(item, bindChange = true, value = false, placeholder = false) {
     let val = value ? value : this.state.value;
     let selected = val === item.props.value;
     return (
       <div
-        className={selected ? 'item active selected' : 'item'}
+        className={classNames('item', { 'active selected': selected})}
         onClick={bindChange ? this.handleChange.bind(this, item) : this.closeMenu.bind(this)}
         key={`dropdown_option_${item.props.value}`}
       >
@@ -145,14 +151,14 @@ export default class Dropdown extends Component {
     );
   }
   renderItemChildren(children, placeholder = false) {
-    if(!Array.isArray(children) || !placeholder) {
+    if (!Array.isArray(children) || !placeholder) {
       return children;
     }
     return children.filter(child => {
       if (!child.props) {
         return true;
       }
-      return !child.props.ignoreInPlaceholder
+      return !child.props.ignoreInPlaceholder;
     });
   }
   renderDefaultValue() {
@@ -163,12 +169,12 @@ export default class Dropdown extends Component {
     if (Array.isArray(this.props.children)) {
       this.props.children.map(child => {
         if (child.props.value === this.props.defaultValue) {
-          valueComponent = this.renderItem(child, false, this.props.defaultValue, true)
+          valueComponent = this.renderItem(child, false, this.props.defaultValue, true);
         }
-      }.bind(this))
+      });
     } else {
       if (this.props.children.props.value === this.props.defaultValue) {
-        valueComponent = this.renderItem(child, false, this.props.defaultValue, true)
+        valueComponent = this.renderItem(child, false, this.props.defaultValue, true);
       }
     }
     return valueComponent;
@@ -183,12 +189,10 @@ export default class Dropdown extends Component {
     ) {
       return;
     }
-    let renderHeight = this.state.renderHeight;
-    let offsetValues = this._dropdown.getBoundingClientRect();
-    let transition = this.state.transition;
-    let menuEl = ReactDOM.findDOMNode(this._menu);
+    let { renderHeight, transition } = this.state;
+    const offsetValues = this._dropdown.getBoundingClientRect();
     if (!renderHeight) {
-      renderHeight = menuEl.offsetHeight;
+      renderHeight = this._menu.offsetHeight;
     }
     if ((window.innerHeight - renderHeight) < offsetValues.bottom) {
       transition = 'slide up';
@@ -199,18 +203,21 @@ export default class Dropdown extends Component {
       transition: transition, renderHeight: renderHeight
     }), () => {
       this.openMenu();
-    }.bind(this));
+    });
   }
-  handleOutsideClick = (e) => {
+  handleBlur(e) {
+    this.closeMenu(
+      this.props.onBlur instanceof Function ? this.props.onBlur(this, e) : null
+    );
+  }
+  handleOutsideClick(e) {
     if (!this._dropdown) {
       return;
     }
     if (this._dropdown.contains(e.target) || !this.state.open) {
       return;
     }
-    this.closeMenu(
-      this.props.onBlur instanceof Function ? this.props.onBlur(this, e) : null
-    );
+    this.closeMenu();
   }
   handleChange(target, e) {
     this.setState({
@@ -228,10 +235,50 @@ export default class Dropdown extends Component {
       }
     }.bind(this, e));
   }
+  handleKeyDown(e) {
+    const keyVal = keycode(e);
+    let { focusedOptionKey } = this.state;
+    if (keyVal !== 'tab') {
+      e.preventDefault();
+    }
+    if (keyVal === 'down') {
+      focusedOptionKey++;
+    } else if (keyVal === 'up') {
+      focusedOptionKey--;
+    } else if (keyVal.length === 1) {
+      focusedOptionKey = this.findOptionKey(keyVal);
+    } else {
+      return;
+    }
+    const focusedChild = this.props.children[focusedOptionKey];
+    if (!focusedChild) {
+      return;
+    }
+    this.setState({
+      ...this.state,
+      value: focusedChild.props.value,
+      focusedOptionKey: focusedOptionKey,
+      valueContent: this.renderItem(
+        focusedChild, false, focusedChild.props.value, true
+      )
+    });
+  }
+  findOptionKey(keyVal) {
+    let key = -1;
+    for (let i = 0; i < this.props.children.length; i++) {
+      let childVal = this.props.children[i].props.value;
+      if (childVal.charAt(0).toLowerCase() == keyVal) {
+        key = i;
+        break;
+      }
+    }
+    return key;
+  }
   openMenu() {
-    this.setState(Object.assign({}, this.state, {
+    this.setState({
+      ...this.state,
       open: true
-    })); 
+    });
   }
   closeMenu(callback = () => {}) {
     this.setState(

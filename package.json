@@ -6,7 +6,7 @@
     "type": "git",
     "url": "thirdpartytrust/react-semantic"
   },
-  "scripts":{
+  "scripts": {
     "clean": "rimraf lib",
     "build": "npm run clean && webpack --config webpack.config.js",
     "build:commonjs": "npm run clean && babel src --out-dir lib"
@@ -37,6 +37,7 @@
   "dependencies": {
     "classnames": "^2.2.1",
     "document-offset": "^1.0.4",
+    "keycode": "^2.1.2",
     "react-portal": "^2.1.0"
   }
 }
